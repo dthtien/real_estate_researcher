@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_10_161250) do
+ActiveRecord::Schema.define(version: 2019_05_19_092047) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,25 +21,33 @@ ActiveRecord::Schema.define(version: 2019_05_10_161250) do
     t.string "district"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "total_page"
+    t.string "province"
   end
 
   create_table "history_prices", force: :cascade do |t|
-    t.float "price"
+    t.float "total_price"
     t.float "acreage"
     t.bigint "land_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "square_meter_price"
+    t.date "posted_date"
     t.index ["land_id"], name: "index_history_prices_on_land_id"
   end
 
   create_table "lands", force: :cascade do |t|
     t.float "acreage"
     t.float "total_price"
-    t.float "square_metre_price"
+    t.float "square_meter_price"
     t.text "address_detail"
     t.bigint "address_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title"
+    t.string "source_url"
+    t.text "description"
+    t.date "post_date"
     t.index ["address_id"], name: "index_lands_on_address_id"
   end
 

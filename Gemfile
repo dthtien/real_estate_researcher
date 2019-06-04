@@ -17,9 +17,10 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
-
+gem "slack-notifier"
+gem 'exception_notification'
 gem 'nokogiri'
-gem 'dotenv'
+gem 'dotenv-rails', groups: [:development, :test]
 gem 'sidekiq'
 gem 'whenever', require: false
 
