@@ -1,31 +1,54 @@
 require 'open-uri'
-
+# Scraper https://batdongsan.com.vn to predict real estate price
 class Scrapers::RealEstate
+  include ActiveSupport::Rescuable
+
   BASE_URL = 'https://batdongsan.com.vn/'.freeze
   HCM_REAL_ESTATE_URL = 'nha-dat-ban-tp-hcm'.freeze
   USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36'.freeze
   BASE_ADDRESS_ELEMENT = '#RightMainContent__productCountByContext_bodyContainer #divCountByAreas ul a'.freeze
-  REJECT_ADDRESS_TEXT = 'Khu vực: '.freeze
+  REJECT_ADDRESS_TEXT = /(Khu vực: | Bán )/.freeze
+  TIMEOUT_EXEPTION = [Errno::ETIMEDOUT, Net::OpenTimeout, SocketError].freeze
+
+  rescue_from StandardError do |e|
+    slack_notifier.ping(e)
+    nil
+  end
 
   def call
     scraping_urls.each do |url|
       url[:ward_links].each do |link|
-        ApplicationRecord.connection.transaction do
-          address = Address.find_or_create_by(
-            ward: link[:name],
-            district: url[:distric_name],
-            province: url[:province]
-          )
+        province = Province.find_or_create_by(
+          name: url[:province],
+          alias_name: VietnameseSanitizer.execute!(url[:province])
+        )
 
-          page_count = 1 #total_page(page_content(link[:href]))
-          address.total_page = page_count
-          address.save!
-          while page_count.positive?
-            doc = page_content(link[:href] + "/p#{page_count}")
-            land_list = doc.css('.product-list-page .search-productItem')
-            land_list.each { |land| save_land!(land_attributes(land), address) }
-            page_count -= 1
+        district = District.find_or_create_by(
+          name: url[:distric_name],
+          alias_name: VietnameseSanitizer.execute!(url[:distric_name]),
+          parent_id: province.id
+        )
+
+        ward = Ward.find_or_create_by(
+          name: link[:name],
+          alias_name: VietnameseSanitizer.execute!(link[:name]),
+          parent_id: district.id
+        )
+
+        page_count = total_page(page_content(link[:href]))
+        ward.total_page = page_count
+        ward.save!
+
+        while page_count.positive?
+          doc = page_content(link[:href] + "/p#{page_count}")
+          next if doc.blank?
+          land_list = doc.css('.product-list-page .search-productItem')
+          land_list.each do |land|
+            next if land.blank?
+
+            save_land!(land_attributes(land), ward)
           end
+          page_count -= 1
         end
       end
     end
@@ -49,6 +72,7 @@ class Scrapers::RealEstate
     end
   rescue TypeError => e
     slack_notifier.ping(e)
+    nil
   end
 
   def slack_notifier
@@ -58,7 +82,7 @@ class Scrapers::RealEstate
   end
 
   def scraping_urls
-    @scraping_urls ||= list_urls(HCM_REAL_ESTATE_URL)[0..0].map do |link|
+    @scraping_urls ||= list_urls(HCM_REAL_ESTATE_URL).map do |link|
                           puts link[:name]
                           {
                             distric_name: link[:name],
@@ -72,7 +96,7 @@ class Scrapers::RealEstate
   def list_urls(url)
     page = page_content(url)
     page.css(BASE_ADDRESS_ELEMENT)
-        .map { |a| { name: a.text.strip, href: a['href'] } }
+        .map { |a| { name: a.text.strip.downcase, href: a['href'] } }
   end
 
   def total_page(page)
@@ -82,6 +106,9 @@ class Scrapers::RealEstate
 
   def page_content(url)
     Nokogiri::HTML(open(BASE_URL + url, 'User-Agent' => USER_AGENT, &:read))
+  rescue *TIMEOUT_EXEPTION => e
+    slack_notifier.ping(e)
+    nil
   end
 
   def land_attributes(land_element)
@@ -90,6 +117,8 @@ class Scrapers::RealEstate
     acreage = land_element.css('.product-area').text
     square_meter_price, total_price = parse_price(product_price, acreage)
     land_details = page_content(title_element.first[:href])
+    return if land_details.blank?
+
     address_detail = land_details.css('.diadiem-title').text.strip
                                  .gsub(REJECT_ADDRESS_TEXT, '')
     {
@@ -103,38 +132,42 @@ class Scrapers::RealEstate
     }
   end
 
-  def save_land!(attributes, address)
-    land = Land.find_or_initialize_by(
-      address_id: address.id,
-      acreage: attributes[:acreage],
-      address_detail: attributes[:address_detail]
-    )
+  def save_land!(attributes, ward)
+    return if attributes.blank?
 
-    land.source_url = attributes[:source_url]
-    land.title = attributes[:title]
-    land.description = attributes[:desciption]
-    square_meter_price = attributes[:square_meter_price]
-    total_price = attributes[:total_price]
-    is_price_change = land.square_meter_price.present? &&
-                        land.square_meter_price != square_meter_price
-
-    if is_price_change
-      HistoryPrice.create(
-        total_price: land.total_price,
-        acreage: land.acreage,
-        square_meter_price: land.square_meter_price,
-        posted_date: land.post_date
+    ApplicationRecord.connection.transaction do
+      street = Street.find_or_create_by(
+        name: attributes[:address_detail],
+        alias_name: VietnameseSanitizer.execute!(attributes[:address_detail]),
+        parent_id: ward.id
       )
 
-      land.post_date = attributes[:post_date]
-      land.total_price = total_price
-      land.square_meter_price = square_meter_price
-      land.save!
-      return
-    end
+      land = Land.find_or_initialize_by(
+        address_id: street.id,
+        acreage: attributes[:acreage]
+      )
 
-    land.square_meter_price = square_meter_price
-    land.total_price = total_price
-    land.save!
+      land.source_url = attributes[:source_url]
+      land.title = attributes[:title]
+      land.description = attributes[:desciption]
+      square_meter_price = attributes[:square_meter_price]
+      total_price = attributes[:total_price]
+
+      land.post_date = attributes[:post_date]
+      land.square_meter_price = square_meter_price
+      land.total_price = total_price
+      if land.persisted?
+        if land.total_price_changed? || land.square_meter_price_changed?
+          HistoryPrice.create(
+            total_price: land.total_price_was || land.total_price,
+            acreage: land.acreage,
+            square_meter_price: land.square_meter_price_was || land.square_meter_prices,
+            posted_date: land.post_date_was || land.post_date
+          )
+        end
+      end
+
+      land.save!
+    end
   end
 end

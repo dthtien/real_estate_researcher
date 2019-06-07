@@ -23,5 +23,7 @@ gem 'nokogiri'
 gem 'dotenv-rails', groups: [:development, :test]
 gem 'sidekiq'
 gem 'whenever', require: false
+gem 'fast_jsonapi'
+gem 'rack-cors'
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
