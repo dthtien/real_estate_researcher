@@ -21,5 +21,6 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
-client/
 client/node_modules
+client/.env
+client/yarn.lock
