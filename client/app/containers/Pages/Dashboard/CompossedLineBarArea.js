@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import { createMuiTheme, withStyles } from '@material-ui/core/styles';
 import ThemePallete from 'app-api/palette/themePalette';
 import blue from '@material-ui/core/colors/blue';
+import { Loading } from 'app-components';
 import {
   ComposedChart,
   Line,
-  Area,
-  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -22,7 +21,8 @@ const styles = {
   chartFluid: {
     width: '100%',
     minWidth: 500,
-    height: 450
+    height: 450,
+    overflowX: 'scroll'
   }
 };
 
@@ -35,33 +35,43 @@ const color = ({
 });
 
 function CompossedLineBarArea(props) {
-  const { classes } = props;
+  const { classes, addresses: { data, error, loading } } = props;
+
+  if (loading) {
+    return <Loading />
+  }
+
+  if (error) {
+    return <h1>error</h1>
+  }
+  const parseDataGraph = (parsingData) => parsingData.map(data => ({
+    name: data.attributes.name,
+    avgScore: data.attributes.avg_square_meter_price
+  }))
   return (
     <div className={classes.chartFluid}>
       <ResponsiveContainer>
         <ComposedChart
-          layout="vertical"
           width={800}
           height={450}
-          data={data1}
+          data={parseDataGraph(data)}
           margin={{
             top: 5,
             right: 30,
             left: 20,
             bottom: 5
           }}
+          style={{ padding: '10' }}
         >
-          <XAxis axisLine={false} tickSize={3} tickLine={false} tick={{ stroke: 'none' }} />
-          <YAxis dataKey="name" type="category" tickLine={5} />
-          {/* <XAxis dataKey="name" tickLine={5} />
-          <YAxis axisLine={false} tickSize={3} tickLine={false} tick={{ stroke: 'none' }} /> */}
+          {/* <XAxis axisLine={false} tickSize={3} tickLine={false} tick={{ stroke: 'none' }} />
+          <YAxis dataKey="name" type="category" /> */}
+          <XAxis dataKey="name" tickLine={5} />
+          <YAxis axisLine={false} tickSize={3} tickLine={false} tick={{ stroke: 'none' }} />
           <CartesianGrid vertical={false} strokeDasharray="3 3" />
           <CartesianAxis vertical={false} />
           <Tooltip />
           <Legend />
-          <Area type="monotone" dataKey="amt" fillOpacity="0.8" fill={color.main} stroke="none" />
-          <Bar dataKey="pv" barSize={60} fillOpacity="0.8" fill={color.secondary} />
-          <Line type="monotone" dataKey="uv" strokeWidth={4} stroke={color.third} />
+          <Line type="monotone" dataKey="avgScore" strokeWidth={4} stroke={color.third} />
         </ComposedChart>
       </ResponsiveContainer>
     </div>
@@ -70,6 +80,7 @@ function CompossedLineBarArea(props) {
 
 CompossedLineBarArea.propTypes = {
   classes: PropTypes.object.isRequired,
+  addresses: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(CompossedLineBarArea);

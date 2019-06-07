@@ -191,6 +191,7 @@ module.exports = options => ({
     mainFields: ['browser', 'jsnext:main', 'main'],
     alias: {
       'app-components': path.resolve(__dirname, '../../app/components/'),
+      'app-redux': path.resolve(__dirname, '../../app/redux/'),
       'app-actions': path.resolve(__dirname, '../../app/actions/'),
       'app-styles': path.resolve(__dirname, '../../app/styles/components/'),
       'app-api': path.resolve(__dirname, '../../app/api/'),

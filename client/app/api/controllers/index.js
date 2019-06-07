@@ -1,1 +1,4 @@
-export { AddressesApi } from './AddressesApi';
+/* eslint-disable import/prefer-default-export */
+import AddressesApi from "./AddressesApi";
+
+export { AddressesApi };

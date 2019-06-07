@@ -1,19 +1,42 @@
+import Loading from "./Loading";
+
 // Main Components
-export Header from './Header/Header';
-export HeaderMenu from './Header/HeaderMenu';
-export Sidebar from './Sidebar/Sidebar';
-export BreadCrumb from './BreadCrumb/BreadCrumb';
-export SourceReader from './SourceReader/SourceReader';
-export PapperBlock from './PapperBlock/PapperBlock';
-export SearchUi from './Search/SearchUi';
+import Header from './Header/Header';
+import HeaderMenu from './Header/HeaderMenu';
+import Sidebar from './Sidebar/Sidebar';
+import BreadCrumb from './BreadCrumb/BreadCrumb';
+import SourceReader from './SourceReader/SourceReader';
+import PapperBlock from './PapperBlock/PapperBlock';
+import SearchUi from './Search/SearchUi';
+import HelmetHeader from './Header/HelmetHeader'
+
 // Guide
-export GuideSlider from './GuideSlider';
+import GuideSlider from './GuideSlider';
 // Form
-export LoginForm from './Forms/LoginForm';
-export RegisterForm from './Forms/RegisterForm';
-export ResetForm from './Forms/ResetForm';
-export Notification from './Notification/Notification';
+import LoginForm from './Forms/LoginForm';
+import RegisterForm from './Forms/RegisterForm';
+import ResetForm from './Forms/ResetForm';
+import Notification from './Notification/Notification';
 // Table
-export EmptyData from './Tables/EmptyData';
+import EmptyData from './Tables/EmptyData';
 // Error
-export ErrorWrap from './Error/ErrorWrap';
+import ErrorWrap from './Error/ErrorWrap';
+
+export {
+  Loading,
+  Header,
+  HeaderMenu,
+  Sidebar,
+  BreadCrumb,
+  SourceReader,
+  PapperBlock,
+  SearchUi,
+  HelmetHeader,
+  GuideSlider,
+  LoginForm,
+  RegisterForm,
+  ResetForm,
+  Notification,
+  EmptyData,
+  ErrorWrap
+}

@@ -1,2 +1,3 @@
-import { BaseApi } from './BaseApi';
-export class AddressesApi extends BaseApi{}
+/* eslint-disable quotes */
+import BaseApi from "./BaseApi";
+export default class AddressesApi extends BaseApi {}
