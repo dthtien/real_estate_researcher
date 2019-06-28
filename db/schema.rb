@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_06_023311) do
+ActiveRecord::Schema.define(version: 2019_06_26_153657) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,9 @@ ActiveRecord::Schema.define(version: 2019_06_06_023311) do
     t.string "alias_name"
     t.string "type"
     t.integer "parent_id"
+    t.boolean "finish", default: false
+    t.string "scrapping_link", default: "{}"
+    t.integer "scrapping_page", default: 0
     t.index ["parent_id"], name: "index_addresses_on_parent_id"
   end
 

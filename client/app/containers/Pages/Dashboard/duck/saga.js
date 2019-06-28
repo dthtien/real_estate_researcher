@@ -6,6 +6,7 @@ import { indexSuccess, indexError } from './actions';
 
 function* getAddresses(action) {
   const api = new AddressesApi();
+
   try {
     const data = yield call(api.index, action.payload);
     yield put(indexSuccess(data))
