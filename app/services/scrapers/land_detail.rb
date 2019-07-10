@@ -37,7 +37,7 @@ class Scrapers::LandDetail < Scrapers::Base
       )
 
       land = Land.find_or_initialize_by(
-        address_id: street.id,
+        street: street,
         acreage: attributes[:acreage]
       )
 
@@ -46,13 +46,13 @@ class Scrapers::LandDetail < Scrapers::Base
       land.description = attributes[:desciption]
       square_meter_price = attributes[:square_meter_price]
       total_price = attributes[:total_price]
-
       land.post_date = attributes[:post_date]
+
       land.square_meter_price = square_meter_price
       land.total_price = total_price
       if land.persisted?
         if land.total_price_changed? || land.square_meter_price_changed?
-          HistoryPrice.create(
+          HistoryPrice.create!(
             total_price: land.total_price_was || land.total_price,
             acreage: land.acreage,
             square_meter_price: land.square_meter_price_was || land.square_meter_prices,

@@ -5,7 +5,13 @@ class Scrapers::Base
 
   USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36'.freeze
   BASE_URL = 'https://batdongsan.com.vn/'.freeze
-  TIMEOUT_EXEPTION = [Errno::ETIMEDOUT, Net::OpenTimeout, SocketError].freeze
+  TIMEOUT_EXEPTION = [
+    Errno::ETIMEDOUT,
+    Net::OpenTimeout,
+    SocketError,
+    Net::ReadTimeout,
+    StandardError
+  ].freeze
 
   rescue_from StandardError do |e|
     slack_notifier.ping(e)
