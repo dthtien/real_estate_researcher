@@ -21,9 +21,5 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
-client/node_modules
-client/.env
-client/yarn.lockGemfile.lock
 .vscode
-client/yarn.lock
-client
+client/
