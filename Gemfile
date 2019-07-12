@@ -17,6 +17,14 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
+
+group :development do
+  gem "capistrano", "~> 3.10", require: false
+  gem "capistrano-rails", "~> 1.4", require: false
+  gem 'capistrano-rbenv', '~> 2.1'
+  gem 'capistrano3-puma'
+end
+
 gem "slack-notifier"
 gem 'exception_notification'
 gem 'nokogiri'
