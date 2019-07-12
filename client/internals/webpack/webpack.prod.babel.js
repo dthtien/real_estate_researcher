@@ -46,28 +46,23 @@ module.exports = require('./webpack.base.babel')({
     nodeEnv: 'production',
     sideEffects: true,
     concatenateModules: true,
+    runtimeChunk: 'single',
     splitChunks: {
       chunks: 'all',
-      minSize: 30000,
-      minChunks: 1,
-      maxAsyncRequests: 5,
-      maxInitialRequests: 3,
-      name: true,
+      maxInitialRequests: 10,
+      minSize: 0,
       cacheGroups: {
-        commons: {
+        vendor: {
           test: /[\\/]node_modules[\\/]/,
-          name: 'vendor',
-          chunks: 'all',
-        },
-        main: {
-          chunks: 'all',
-          minChunks: 2,
-          reuseExistingChunk: true,
-          enforce: true,
+          name(module) {
+            const packageName = module.context.match(
+              /[\\/]node_modules[\\/](.*?)([\\/]|$)/,
+            )[1];
+            return `npm.${packageName.replace('@', '')}`;
+          },
         },
       },
     },
-    runtimeChunk: true,
   },
 
   plugins: [
@@ -130,11 +125,11 @@ module.exports = require('./webpack.base.babel')({
       ios: true,
       icons: [
         {
-          src: path.resolve('public/images/logo.png'),
+          src: path.resolve('app/images/icon-512x512.png'),
           sizes: [72, 96, 128, 144, 192, 384, 512],
         },
         {
-          src: path.resolve('public/images/logo.png'),
+          src: path.resolve('app/images/icon-512x512.png'),
           sizes: [120, 152, 167, 180],
           ios: true,
         },
@@ -149,6 +144,7 @@ module.exports = require('./webpack.base.babel')({
   ],
 
   performance: {
-    assetFilter: assetFilename => !/(\.map$)|(^(main\.|favicon\.))/.test(assetFilename),
+    assetFilter: assetFilename =>
+      !/(\.map$)|(^(main\.|favicon\.))/.test(assetFilename),
   },
 });

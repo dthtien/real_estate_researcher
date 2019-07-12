@@ -1,27 +1,18 @@
 /**
  * COMMON WEBPACK CONFIGURATION
  */
-
+const dotenv = require('dotenv');
 const path = require('path');
 const webpack = require('webpack');
-const dotenv = require('dotenv');
 
-// Remove this line once the following warning goes away (it was meant for webpack loader authors not users):
-// 'DeprecationWarning: loaderUtils.parseQuery() received a non-string value which can be problematic,
-// see https://github.com/webpack/loader-utils/issues/56 parseQuery() will be replaced with getOptions()
-// in the next major version of loader-utils.'
-process.noDeprecation = true;
+const env = dotenv.config().parsed;
 
-const HappyPack = require('happypack');
-const happyThreadPool = HappyPack.ThreadPool({ size: 5 });
- // call dotenv and it will return an Object with a parsed key 
- const env = dotenv.config().parsed;
-  
- // reduce it to a nice object, the same as before
- const envKeys = Object.keys(env).reduce((prev, next) => {
-   prev[`process.env.${next}`] = JSON.stringify(env[next]);
-   return prev;
- }, {});
+// reduce it to a nice object, the same as before
+const envKeys = Object.keys(env).reduce((prev, next) => {
+  // eslint-disable-next-line no-param-reassign
+  prev[next] = JSON.stringify(env[next]);
+  return prev;
+}, {});
 
 module.exports = options => ({
   mode: options.mode,
@@ -37,25 +28,11 @@ module.exports = options => ({
   optimization: options.optimization,
   module: {
     rules: [
-      /*
-        Disabled eslint by default.
-        You can enable it to maintain and keep clean your code.
-        NOTE: By enable eslint running app process at beginning will slower
-      */
-    //  {
-    //    enforce: 'pre',
-    //    test: /\.js?$/,
-    //    exclude: [/node_modules/],
-    //    loader: 'eslint-loader',
-    //    options: {
-    //      quiet: true,
-    //    }
-    //  },
       {
-        test: /\.js$/, // Transform all .js files required somewhere with Babel
+        test: /\.jsx?$/, // Transform all .js and .jsx files required somewhere with Babel
         exclude: /node_modules/,
         use: {
-          loader: 'happypack/loader?id=js',
+          loader: 'babel-loader',
           options: options.babelQuery,
         },
       },
@@ -78,40 +55,20 @@ module.exports = options => ({
         use: 'file-loader',
       },
       {
-        test: /\.(scss)$/,
-        use: [{
-          loader: 'style-loader'
-        },
-        {
-          loader: 'css-loader',
-          options:
+        test: /\.svg$/,
+        use: [
           {
-            sourceMap: false,
-            importLoaders: 2,
-            modules: true,
-            localIdentName: '[local]__[hash:base64:5]'
-          }
-        },
-        {
-          loader: 'postcss-loader',
-          options: {
-            sourceMap: false
-          }
-        },
-        {
-          loader: 'sass-loader',
-          options: {
-            outputStyle: 'expanded',
-            sourceMap: false
-          }
-        }],
+            loader: 'svg-url-loader',
+            options: {
+              // Inline files smaller than 10 kB
+              limit: 10 * 1024,
+              noquotes: true,
+            },
+          },
+        ],
       },
       {
-        test: /\.md$/,
-        use: 'raw-loader'
-      },
-      {
-        test: /\.(jpg|png|gif|svg)$/,
+        test: /\.(jpg|png|gif)$/,
         use: [
           {
             loader: 'url-loader',
@@ -120,35 +77,28 @@ module.exports = options => ({
               limit: 10 * 1024,
             },
           },
-          /*
-            Disabled image compression by default,
-            due error in windows 10 because libpng not available.
-            The libpng avaible on Linux and Mac system only.
-            NOTE: To enable this, first you need to install image-webpack-loader.
-            npm install -i image-webpack-loader --save
-          */
-          //  {
-          //    loader: 'image-webpack-loader',
-          //    options: {
-          //      mozjpeg: {
-          //        enabled: false,
-          //        // NOTE: mozjpeg is disabled as it causes errors in some Linux environments
-          //        // Try enabling it in your environment by switching the config to:
-          //        // enabled: true,
-          //        // progressive: true,
-          //      },
-          //      gifsicle: {
-          //        interlaced: false,
-          //      },
-          //      optipng: {
-          //        optimizationLevel: 7,
-          //      },
-          //      pngquant: {
-          //        quality: '65-90',
-          //        speed: 4,
-          //      },
-          //    },
-          //  },
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              mozjpeg: {
+                enabled: false,
+                // NOTE: mozjpeg is disabled as it causes errors in some Linux environments
+                // Try enabling it in your environment by switching the config to:
+                // enabled: true,
+                // progressive: true,
+              },
+              gifsicle: {
+                interlaced: false,
+              },
+              optipng: {
+                optimizationLevel: 7,
+              },
+              pngquant: {
+                quality: '65-90',
+                speed: 4,
+              },
+            },
+          },
         ],
       },
       {
@@ -166,24 +116,16 @@ module.exports = options => ({
       },
     ],
   },
-  node: {
-    fs: 'empty'
-  },
   plugins: options.plugins.concat([
     // Always expose NODE_ENV to webpack, in order to use `process.env.NODE_ENV`
     // inside your code for any environment checks; Terser will automatically
     // drop any unreachable code.
-    new HappyPack({
-      id: 'js',
-      threadPool: happyThreadPool,
-      loaders: ['babel-loader?cacheDirectory=true']
-    }),
     new webpack.DefinePlugin({
       'process.env': {
+        ...envKeys,
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
       },
     }),
-    new webpack.DefinePlugin(envKeys)
   ]),
   resolve: {
     modules: ['node_modules', 'app'],
@@ -193,11 +135,11 @@ module.exports = options => ({
       'app-components': path.resolve(__dirname, '../../app/components/'),
       'app-redux': path.resolve(__dirname, '../../app/redux/'),
       'app-actions': path.resolve(__dirname, '../../app/actions/'),
-      'app-styles': path.resolve(__dirname, '../../app/styles/components/'),
       'app-api': path.resolve(__dirname, '../../app/api/'),
-      'app-images': path.resolve(__dirname, '../../public/images/'),
-      'app-vendor': path.resolve(__dirname, '../../node_modules/'),
-    }
+    },
+  },
+  node: {
+    fs: 'empty',
   },
   devtool: options.devtool,
   target: 'web', // Make web variables accessible to webpack, e.g. window
