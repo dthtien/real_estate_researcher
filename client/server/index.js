@@ -2,42 +2,20 @@
 
 const express = require('express');
 const logger = require('./logger');
-const favicon = require('serve-favicon');
-const path = require('path');
-const rawicons = require('./rawicons');
-const rawdocs = require('./rawdocs');
+
 const argv = require('./argv');
 const port = require('./port');
 const setup = require('./middlewares/frontendMiddleware');
 const isDev = process.env.NODE_ENV !== 'production';
-const ngrok = (isDev && process.env.ENABLE_TUNNEL) || argv.tunnel
-  ? require('ngrok')
-  : false;
+const ngrok =
+  (isDev && process.env.ENABLE_TUNNEL) || argv.tunnel
+    ? require('ngrok')
+    : false;
 const { resolve } = require('path');
 const app = express();
 
 // If you need a backend, e.g. an API, add your custom backend-specific middleware here
 // app.use('/api', myApi);
-// Load material icons
-app.use('/api/icons', (req, res) => {
-  res.json({
-    records: [
-      { source: rawicons(req.query) }
-    ]
-  });
-});
-
-// Load code preview
-app.use('/api/docs', (req, res) => {
-  res.json({
-    records: [
-      { source: rawdocs(req.query) }
-    ]
-  });
-});
-
-app.use('/', express.static('public', { etag: false }));
-app.use(favicon(path.join('public', 'favicons', 'favicon.ico')));
 
 // In production we need to pass these values in instead of relying on webpack
 setup(app, {
