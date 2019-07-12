@@ -26,3 +26,4 @@ client/.env
 client/yarn.lockGemfile.lock
 .vscode
 client/yarn.lock
+client
