@@ -22,8 +22,5 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 .vscode
-<<<<<<< HEAD
-client/
-=======
 client
->>>>>>> refactor-source-base
+.env
