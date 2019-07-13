@@ -24,5 +24,4 @@
 .vscode
 client
 .env
-config/database.yml
 config/database.yml.example
