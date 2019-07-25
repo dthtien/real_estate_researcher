@@ -39,7 +39,6 @@ set :rbenv_ruby, '2.5.1'
 # set :log_level,     :debug
 # set :keep_releases, 5
 
-
 namespace :puma do
   desc 'Create Directories for Puma Pids and Socket'
   task :make_dirs do
