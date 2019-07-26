@@ -4,32 +4,26 @@ lock '~> 3.11.0'
 set :application, 'real_estate_researcher'
 set :repo_url, 'git@github.com:dthtien/real_estate_researcher.git'
 set :user, 'deploy'
-set :puma_threads, [4, 6]
+set :puma_threads, [0, 6]
 set :puma_workers, 0
 set :rails_env, :production
 
 set :pty, true
 set :use_sudo, false
 set :deploy_via, :remote_cache
-
-set :puma_bind,       "unix://#{shared_path}/tmp/sockets/#{fetch(:application)}-puma.sock"
-set :puma_state,      "#{shared_path}/tmp/pids/puma.state"
-set :puma_pid,        "#{shared_path}/tmp/pids/puma.pid"
-set :puma_access_log, "#{release_path}/log/puma.error.log"
-set :puma_error_log,  "#{release_path}/log/puma.access.log"
-set :ssh_options,     { forward_agent: true, user: fetch(:user), keys: %w(~/.ssh/id_rsa.pub) }
+current_shared_path = "/home/#{fetch(:user, 'deploy')}/#{fetch(:application)}/shared"
+set :puma_bind,       "unix://#{current_shared_path}/tmp/sockets/puma.sock"
+set :puma_state,      "#{current_shared_path}/tmp/pids/puma.state"
+set :puma_pid,        "#{current_shared_path}/tmp/pids/puma.pid"
+set :puma_access_log, "#{current_shared_path}/log/puma.error.log"
+set :puma_error_log,  "#{current_shared_path}/log/puma.access.log"
+set :ssh_options,     { forward_agent: true, keys: %w(~/.ssh/id_rsa) }
 set :puma_preload_app, true
 set :puma_worker_timeout, nil
 set :puma_init_active_record, true
 set :keep_releases, 5
 
-set :linked_files, %w[config/database.yml config/master.key]
-# set :linked_dirs, %w[
-#   log tmp/pids
-#   tmp/cache
-#   tmp/sockets
-#   .bundle
-# ]
+set :linked_files, %w[config/database.yml config/master.key config/puma.rb]
 set :rbenv_ruby, '2.5.1'
 
 ## Defaults:
