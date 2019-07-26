@@ -33,5 +33,6 @@ gem 'sidekiq'
 gem 'whenever', require: false
 gem 'fast_jsonapi'
 gem 'rack-cors'
+gem 'whenever', require: false
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

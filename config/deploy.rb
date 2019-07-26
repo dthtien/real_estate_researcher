@@ -8,6 +8,7 @@ set :puma_threads, [0, 6]
 set :puma_workers, 0
 set :rails_env, :production
 
+set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
 set :pty, true
 set :use_sudo, false
 set :deploy_via, :remote_cache

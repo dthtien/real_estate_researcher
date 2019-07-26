@@ -1,4 +1,11 @@
 Rails.application.configure do
+  config.middleware.use(
+    ExceptionNotification::Rack,
+    slack: {
+      webhook_url: ENV['SLACK_HOOK_URL'],
+      channel: '#real_estate_bugs'
+    }
+  )
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.

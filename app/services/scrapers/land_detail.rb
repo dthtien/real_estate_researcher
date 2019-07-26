@@ -1,5 +1,5 @@
 class Scrapers::LandDetail < Scrapers::Base
-  REJECT_ADDRESS_TEXT = /(Khu vực: | Bán )/.freeze
+  REJECT_ADDRESS_TEXT = /(khu vực|bán)/.freeze
 
   def call
     Ward.where(finish: false).find_each do |ward|
@@ -74,7 +74,8 @@ class Scrapers::LandDetail < Scrapers::Base
     return if land_details.blank?
 
     address_detail = land_details.css('.diadiem-title').text.strip
-                                 .gsub(REJECT_ADDRESS_TEXT, '')
+                                .downcase
+                                .gsub(REJECT_ADDRESS_TEXT, '')
     {
       title: title_element.text.strip.downcase,
       acreage: acreage,
