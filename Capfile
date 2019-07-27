@@ -7,7 +7,6 @@ require "capistrano/rbenv"
 require "capistrano/bundler"
 require "capistrano/rails/migrations"
 require 'capistrano/puma'
-require "whenever/capistrano"
 
 install_plugin Capistrano::Puma  # Default puma tasks
 

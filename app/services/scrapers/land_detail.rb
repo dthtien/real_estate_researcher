@@ -1,7 +1,8 @@
 class Scrapers::LandDetail < Scrapers::Base
-  REJECT_ADDRESS_TEXT = /(khu vực|bán)/.freeze
+  REJECT_ADDRESS_TEXT = /(khu vực: |bán)/.freeze
 
   def call
+    slack_notifier.ping('Start scrapping!')
     Ward.where(finish: false).find_each do |ward|
       page_count = ward.total_page - ward.scrapping_page
       p ward.name
@@ -56,7 +57,8 @@ class Scrapers::LandDetail < Scrapers::Base
             total_price: land.total_price_was || land.total_price,
             acreage: land.acreage,
             square_meter_price: land.square_meter_price_was || land.square_meter_prices,
-            posted_date: land.post_date_was || land.post_date
+            posted_date: land.post_date_was || land.post_date,
+            land: land
           )
         end
       end

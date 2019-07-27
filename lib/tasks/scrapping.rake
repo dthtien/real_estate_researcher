@@ -5,7 +5,7 @@ namespace :scrapping do
   end
 
   task start: :environment do
-    Scrapers::DistrictDetail.new.call unless District.any?
+    Scrapers::DistrictDetail.new.call unless Ward.any?
     Scrapers::LandDetail.new.call
   end
 end
