@@ -1,6 +1,6 @@
 class Address < ApplicationRecord
   extend FriendlyId
-  friendly_id :alias_name
+  friendly_id :alias_name, use: :slugged
 
   scope :avg_square_meter_prices, -> do
     joins(:lands)
