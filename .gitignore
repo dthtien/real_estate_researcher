@@ -25,3 +25,4 @@
 client/
 .env
 config/database.yml.exampleclient/
+Gemfile.lock

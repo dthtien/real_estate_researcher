@@ -1,7 +1,5 @@
 class MixAddressGraphSerializer < ApplicationSerializer
-  attributes :average_price
+  attributes :average_price, :slug
 
-  attribute :name do |object|
-    object.show_name
-  end
+  attribute(:name, &:show_name)
 end
