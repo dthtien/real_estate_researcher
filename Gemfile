@@ -35,5 +35,6 @@ gem 'fast_jsonapi'
 gem 'rack-cors'
 gem 'whenever', require: false
 gem 'friendly_id', '~> 5.2.4'
+gem 'kaminari'
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

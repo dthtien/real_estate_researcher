@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_30_162649) do
+ActiveRecord::Schema.define(version: 2019_08_08_154925) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,7 +65,10 @@ ActiveRecord::Schema.define(version: 2019_07_30_162649) do
     t.string "source_url"
     t.text "description"
     t.date "post_date"
+    t.string "slug"
+    t.string "alias_title"
     t.index ["address_id"], name: "index_lands_on_address_id"
+    t.index ["slug"], name: "index_lands_on_slug", unique: true
   end
 
   add_foreign_key "lands", "addresses"

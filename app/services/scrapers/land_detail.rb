@@ -44,6 +44,7 @@ class Scrapers::LandDetail < Scrapers::Base
 
       land.source_url = attributes[:source_url]
       land.title = attributes[:title]
+      land.alias_title = VietnameseSanitizer.execute!(attributes[:title])
       land.description = attributes[:desciption]
       square_meter_price = attributes[:square_meter_price]
       total_price = attributes[:total_price]
@@ -85,7 +86,7 @@ class Scrapers::LandDetail < Scrapers::Base
       square_meter_price: square_meter_price,
       total_price: total_price,
       desciption: land_details.css('.pm-desc').text.strip,
-      post_date: land_element.css('.floatright.mar-right-10').text.strip
+      post_date: land_element.css('.uptime').text.strip
     }
   end
 

@@ -1,5 +1,5 @@
 class AddressSerializer < ApplicationSerializer
-  attributes :average_price
+  attributes :average_price, :slug
 
   attribute(:name, &:show_name)
   attribute :land_counts do |object|
