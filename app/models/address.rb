@@ -22,8 +22,6 @@ class Address < ApplicationRecord
   end
 
   def show_name
-    return "#{name}, #{district.name}" if self.class == Ward
-
-    name
+    self.class == Ward ? "#{name}, #{district.name}" : name
   end
 end

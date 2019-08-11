@@ -1,7 +1,7 @@
 class V1::LandsController < ApplicationController
   def index
     address = Address.find_by_slug(params[:address_id])
-    lands = address.lands.page(params[:page].to_i + 1)
+    lands = address.lands.top_fluctuate.page(params[:page].to_i + 1)
 
     render json: {
       lands: LandSerializer.new(lands).serializable_hash,
