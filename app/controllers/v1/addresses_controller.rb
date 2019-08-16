@@ -1,5 +1,6 @@
 class V1::AddressesController < ApplicationController
   def index
+    assa
     opeation = AddressOperations::Index.new(params).execute
     render json: opeation.addresses
   end
@@ -13,6 +14,7 @@ class V1::AddressesController < ApplicationController
 
   def show
     address = Address.find_by_slug(params[:id])
+
     render json: AddressSerializer.new(address).serializable_hash
   end
 end

@@ -3,7 +3,7 @@ class AddressSerializer < ApplicationSerializer
 
   attribute(:name, &:show_name)
   attribute :land_counts do |object|
-    object.lands.count
+    object.lands.page(1).total_count
   end
 
   attribute :sub_addresses do |object|

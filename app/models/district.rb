@@ -4,13 +4,16 @@ class District < Address
   has_many :streets, through: :wards
 
   def lands
-    Land.joins(<<-SQL.strip_heredoc
+    Land.select('lands.*, COUNT(history_prices.id) history_prices_count')
+      .joins(<<-SQL.strip_heredoc
+        LEFT OUTER JOIN "history_prices" ON "history_prices"."land_id" = "lands"."id"
         INNER JOIN "addresses" ON "lands"."address_id" = "addresses"."id"
         INNER JOIN "addresses" "wards_lands"
           ON "addresses"."parent_id" = "wards_lands"."id"
           WHERE "wards_lands"."type" IN ('Ward')
           AND "wards_lands"."parent_id" = #{id}
         SQL
-      )
+      ).group(:id)
+      .order("history_prices_count desc")
   end
 end
