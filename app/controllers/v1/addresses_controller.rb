@@ -1,6 +1,5 @@
 class V1::AddressesController < ApplicationController
   def index
-    assa
     opeation = AddressOperations::Index.new(params).execute
     render json: opeation.addresses
   end
