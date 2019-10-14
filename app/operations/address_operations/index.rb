@@ -10,10 +10,7 @@ class AddressOperations::Index
       @addresses = MixAddressGraphSerializer.new(parse_addresses)
                                             .serializable_hash
     else
-      district = District.find_by(alias_name: 'quan 1')
-      @addresses = AddressGraphSerializer.new(
-        district.wards.avg_square_meter_prices.to_a
-      ).serializable_hash
+      @addresses = ProvinceSerializer.new(Province.first)
     end
 
     self

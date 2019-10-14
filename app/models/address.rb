@@ -17,8 +17,8 @@ class Address < ApplicationRecord
     price = lands.select(
               '(AVG(lands.total_price)::decimal /  NULLIF(AVG(lands.acreage),0))
                 as average_price'
-            )[0].average_price
-    price.present? ? price.round(0) : 0.0
+            )[0]
+    price.present? ? price.average_price.round(0) : 0.0
   end
 
   def show_name
