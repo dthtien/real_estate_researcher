@@ -1,8 +1,9 @@
 class Address < ApplicationRecord
   extend FriendlyId
   friendly_id :alias_name, use: :slugged
+  has_many :price_loggers, -> { newest }, as: :loggable
 
-  scope :avg_square_meter_prices, -> do
+  scope :avg_square_meter_prices, (lambda do
     joins(:lands)
       .select('
         addresses.id,
@@ -11,6 +12,22 @@ class Address < ApplicationRecord
         (AVG(lands.total_price)::decimal / NULLIF(AVG(lands.acreage),0))
           as avg_square_meter_price')
       .group('addresses.name, addresses.id, addresses.slug')
+  end)
+
+  scope :search_by_name, (lambda do |name|
+    where('alias_name iLIKE ? OR name iLIKE ?', "%#{name}%", "%#{name}%")
+  end)
+
+  def latest_log
+    price_loggers.first
+  end
+
+  def second_latest_log
+    price_loggers.second
+  end
+
+  def lands_count
+    lands.count
   end
 
   def average_price
@@ -18,7 +35,7 @@ class Address < ApplicationRecord
               '(AVG(lands.total_price)::decimal /  NULLIF(AVG(lands.acreage),0))
                 as average_price'
             )[0]
-    price.present? ? price.average_price.round(0) : 0.0
+    price&.average_price || 0.0
   end
 
   def show_name
