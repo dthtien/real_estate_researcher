@@ -5,6 +5,7 @@ namespace :scrapping do
   end
 
   task start: :environment do
-    Scrapers::RealEstate.new.call
+    Scrapers::DistrictDetail.new.call
+    Scrapers::LandDetail.new.call
   end
 end

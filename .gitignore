@@ -22,6 +22,15 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 .vscode
-client
+client/
 .env
-config/database.yml.example
+config/database.yml.exampleclient/
+Gemfile.lock
+dump.tar
+
+/public/packs
+/public/packs-test
+/node_modules
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity
