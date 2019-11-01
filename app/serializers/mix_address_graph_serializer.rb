@@ -12,10 +12,6 @@ class MixAddressGraphSerializer < ApplicationSerializer
     object.latest_logs.first.logged_date
   end
 
-  attribute :lands do |object|
-    LandSerializer.new(object.lands).serializable_hash[:data]
-  end
-
   attribute :lands_count do |object|
     object.latest_logs.pluck(:lands_count).sum
   end
@@ -25,5 +21,9 @@ class MixAddressGraphSerializer < ApplicationSerializer
     prices.present? ? 100 * prices.sum / prices.size : 0
   end
 
-  attribute :new_lands_count
+  attribute :new_lands_count do |object|
+    object.addresses.map do |address|
+      address.lands.new_lands_count
+    end.sum
+  end
 end

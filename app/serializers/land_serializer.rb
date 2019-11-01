@@ -5,4 +5,8 @@ class LandSerializer < ApplicationSerializer
   attribute :address do |object|
     object.street.name
   end
+
+  attribute :change_times do |object|
+    object.history_prices_count
+  end
 end

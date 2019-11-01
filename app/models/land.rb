@@ -47,8 +47,12 @@ class Land < ApplicationRecord
   scope :new_lands, (lambda do
     where(post_date: [Time.current.beginning_of_day..Time.current.end_of_day])
   end)
-  scope :new_lands_custom, (lambda do
-    where('"lands"."post_date" BETWEEN ? AND ?',
-        Time.current.beginning_of_day, Time.current.end_of_day)
+
+  scope :calculatable, (lambda do
+    where('lands.total_price > 0 AND lands.acreage > 0')
+  end)
+
+  scope :with_street_name, (lambda do
+    select('lands.*, addresses.name as address').joins(:street)
   end)
 end

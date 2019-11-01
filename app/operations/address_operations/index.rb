@@ -25,18 +25,6 @@ class AddressOperations::Index
     @latest_logs ||= addresses.map(&:latest_log)
   end
 
-  def lands
-    @lands ||= addresses.map do |address|
-      address.lands.includes(:street).limit(5)
-    end.sum
-  end
-
-  def new_lands_count
-    @new_lands_count ||= addresses.map do |address|
-      address.lands.new_lands_custom.count
-    end
-  end
-
   private
 
   def parsing_addresses

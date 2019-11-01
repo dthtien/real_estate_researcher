@@ -1,7 +1,7 @@
 class AddressGraphSerializer < ApplicationSerializer
-  attribute :name, :slug, :lands_count
+  attribute :name, :slug, :price, :logged_date, :lands_count_ratio, :price_ratio
 
-  attribute :average_price do |object|
-    object.average_price.to_f.round(0)
+  attribute :lands_count do |object|
+    object.latest_log.lands_count
   end
 end

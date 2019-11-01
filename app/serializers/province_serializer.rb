@@ -2,12 +2,8 @@ class ProvinceSerializer < ApplicationSerializer
   attributes :name
 
   attribute :children do |object|
-    AddressGraphSerializer.new(object.districts).serializable_hash[:data]
-  end
-
-  attribute :lands do |object|
-    LandSerializer.new(
-      object.lands.includes(:street).limit(10)
+    AddressGraphSerializer.new(
+      object.districts.calculatable
     ).serializable_hash[:data]
   end
 
@@ -27,7 +23,7 @@ class ProvinceSerializer < ApplicationSerializer
     object.latest_log.price_ratio * 100
   end
 
-  attribute :new_lands_count do |object|
+  attribute :new_lands_count do
     Land.new_lands_count
   end
 end
