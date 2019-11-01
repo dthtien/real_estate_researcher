@@ -2,12 +2,14 @@ class District < Address
   belongs_to :province, foreign_key: :parent_id
   has_many :wards, foreign_key: :parent_id
   has_many :streets, through: :wards
+  has_many :lands, through: :streets
 
   def lands
-    @lands ||= Land.select(
-      'lands.*, COUNT(history_prices.id) history_prices_count'
-    ).with_history_prices.district_relation(id)
+    @lands ||= Land.district_relation(id)
+  end
 
+  def top_fluctuate_lands
+    @top_fluctuate_lands ||= Land.top_fluctuate.district_relation(id)
   end
 
   def lands_count

@@ -1,11 +1,13 @@
 Rails.application.routes.draw do
   namespace :v1, path: 'api/v1' do
-    resources :addresses, shallow: true do
+    resources :addresses, only: %i[index show] do
       collection do
         get :address_names
       end
+    end
 
-      resources :lands
+    resources :lands, only: %i[index show] do
+      resources :history_prices, only: %i[index]
     end
   end
 end

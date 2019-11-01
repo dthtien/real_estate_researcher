@@ -1,10 +1,12 @@
 class LandSerializer < ApplicationSerializer
-  attributes :id,
-    :total_price,
-    :square_meter_price,
-    :acreage,
-    :title,
-    :description,
-    :post_date,
-    :slug
+  attributes :id, :total_price, :square_meter_price, :acreage, :title,
+             :description, :post_date, :slug
+
+  attribute :address do |object|
+    object.street.name
+  end
+
+  attribute :change_times do |object|
+    object.history_prices_count
+  end
 end

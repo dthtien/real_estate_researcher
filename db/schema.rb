@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_12_125340) do
+ActiveRecord::Schema.define(version: 2019_10_22_014817) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,6 +29,11 @@ ActiveRecord::Schema.define(version: 2019_10_12_125340) do
     t.string "slug"
     t.index ["parent_id"], name: "index_addresses_on_parent_id"
     t.index ["slug"], name: "index_addresses_on_slug", unique: true
+    t.index ["type"], name: "addresses_partial_type_address", where: "((type)::text = 'Address'::text)"
+    t.index ["type"], name: "addresses_partial_type_district", where: "((type)::text = 'District'::text)"
+    t.index ["type"], name: "addresses_partial_type_province", where: "((type)::text = 'Province'::text)"
+    t.index ["type"], name: "addresses_partial_type_street", where: "((type)::text = 'Street'::text)"
+    t.index ["type"], name: "addresses_partial_type_ward", where: "((type)::text = 'Ward'::text)"
   end
 
   create_table "friendly_id_slugs", force: :cascade do |t|
@@ -69,6 +74,20 @@ ActiveRecord::Schema.define(version: 2019_10_12_125340) do
     t.string "alias_title"
     t.index ["address_id"], name: "index_lands_on_address_id"
     t.index ["slug"], name: "index_lands_on_slug", unique: true
+  end
+
+  create_table "price_loggers", force: :cascade do |t|
+    t.float "price"
+    t.integer "loggable_id"
+    t.string "loggable_type"
+    t.date "logged_date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "lands_count", default: 0
+    t.integer "lands_count_ratio"
+    t.integer "price_ratio"
+    t.index ["loggable_id", "loggable_type", "logged_date"], name: "logged_date_unique_index", unique: true
+    t.index ["loggable_id", "loggable_type"], name: "index_price_loggers_on_loggable_id_and_loggable_type"
   end
 
   add_foreign_key "lands", "addresses"
