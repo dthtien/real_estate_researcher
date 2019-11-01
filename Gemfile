@@ -23,6 +23,7 @@ group :development do
   gem "capistrano-rails", "~> 1.4", require: false
   gem 'capistrano-rbenv', '~> 2.1'
   gem 'capistrano3-puma'
+  gem 'scout_apm'
 end
 
 gem "slack-notifier"
@@ -37,6 +38,5 @@ gem 'whenever', require: false
 gem 'friendly_id', '~> 5.2.4'
 gem 'kaminari'
 gem "webpacker"
-gem 'scout_apm'
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
