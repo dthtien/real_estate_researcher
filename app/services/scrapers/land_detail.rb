@@ -3,6 +3,7 @@ class Scrapers::LandDetail < Scrapers::Base
 
   def call
     slack_notifier.ping('Start scrapping!')
+
     Ward.where(finish: false).find_each do |ward|
       page_count = ward.total_page - ward.scrapping_page
       p ward.name
@@ -36,36 +37,45 @@ class Scrapers::LandDetail < Scrapers::Base
         alias_name: VietnameseSanitizer.execute!(attributes[:address_detail]),
         parent_id: ward.id
       )
-
-      land = Land.find_or_initialize_by(
-        street: street,
-        acreage: attributes[:acreage]
-      )
-
-      land.source_url = attributes[:source_url]
-      land.title = attributes[:title]
-      land.alias_title = VietnameseSanitizer.execute!(attributes[:title])
-      land.description = attributes[:desciption]
-      square_meter_price = attributes[:square_meter_price]
-      total_price = attributes[:total_price]
-      land.post_date = attributes[:post_date]
-
-      land.square_meter_price = square_meter_price
-      land.total_price = total_price
-      if land.persisted?
-        if land.total_price_changed? || land.square_meter_price_changed?
-          HistoryPrice.create!(
-            total_price: land.total_price_was || land.total_price,
-            acreage: land.acreage,
-            square_meter_price: land.square_meter_price_was || land.square_meter_prices,
-            posted_date: land.post_date_was || land.post_date,
-            land: land
-          )
-        end
-      end
-
+      land = assign_land_detail(attributes, street)
+      save_history!(land) if information_changed?(land)
       land.save!
     end
+  end
+
+  def assign_land_detail(attributes, street)
+    land = Land.find_or_initialize_by(
+      street: street,
+      acreage: attributes[:acreage]
+    )
+    land.source_url = attributes[:source_url]
+    land.title = attributes[:title]
+    land.alias_title = VietnameseSanitizer.execute!(attributes[:title])
+    land.description = attributes[:desciption]
+    land.post_date = attributes[:post_date]
+    land.square_meter_price = attributes[:square_meter_price]
+    land.total_price = attributes[:total_price]
+
+    land
+  end
+
+  def information_changed?(land)
+    land.persisted? && (
+      land.total_price_changed? || land.square_meter_price_changed?)
+  end
+
+  def save_history!(land)
+    square_meter_price = land.square_meter_price_was || land.square_meter_prices
+
+    history_price = HistoryPrice.new(
+      total_price: land.total_price_was || land.total_price,
+      acreage: land.acreage,
+      square_meter_price: square_meter_price,
+      posted_date: land.post_date_was || land.post_date,
+      land: land
+    )
+
+    history_price.save! if history_price.valid?
   end
 
   def land_attributes(land_element)
