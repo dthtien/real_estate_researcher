@@ -1,7 +1,7 @@
 class HistoryPrice < ApplicationRecord
   belongs_to :land
 
-  validates_uniqueness_of :total_price, scope: %i[acreage land_id]
+  validates_uniqueness_of :total_price, scope: %i[acreage land_id posted_date]
 
   scope :needed_fields, (lambda do
     uniqueness_informations
@@ -10,8 +10,7 @@ class HistoryPrice < ApplicationRecord
 
   scope :uniqueness_informations, (lambda do
     select('
-      DISTINCT ON (history_prices.total_price, history_prices.acreage,
-        history_prices.land_id
+      DISTINCT ON (history_prices.total_price, history_prices.posted_date
       ) "history_prices"."id"
     ')
   end)
@@ -22,8 +21,8 @@ class HistoryPrice < ApplicationRecord
 
   scope :ordering, (lambda do |params|
     order(
-      posted_date: params[:posted_date],
-      total_price: params[:total_price]
+      posted_date: params[:posted_date] || :desc,
+      total_price: params[:total_price] || :desc
     )
   end)
 end

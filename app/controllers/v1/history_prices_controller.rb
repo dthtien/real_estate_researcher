@@ -1,8 +1,6 @@
 class V1::HistoryPricesController < ApplicationController
   def index
-    history_prices = HistoryPrice.where(land_id: land.id)
-                                 .needed_fields
-                                 .ordering(params)
+    history_prices = land.history_prices.needed_fields.ordering(params)
     history_prices_with_pagination = history_prices.page(params[:page])
 
     render json: {
