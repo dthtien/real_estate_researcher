@@ -37,7 +37,7 @@ class LandOperations::Index
             .with_history_prices
       end
 
-    parse_lands.page(params[:page])
+    parse_lands.page(params[:page].to_i + 1)
   end
 
   def addresses
