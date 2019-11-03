@@ -6,15 +6,15 @@ set :output, 'log/cron_log.log'
 #   rake 'scrapping:start'
 # end
 
-every :day, at: '4:31pm', role: [:app] do
+every :day, at: '3:41pm', role: [:app] do
   rake 'scrapping:first_district'
 end
 
-every :day, at: '4:32pm', role: [:app] do
+every :day, at: '3:42pm', role: [:app] do
   rake 'scrapping:second_district'
 end
 
-every :day, at: '4:33pm', role: [:app] do
+every :day, at: '3:43pm', role: [:app] do
   rake 'scrapping:third_district'
 end
 
