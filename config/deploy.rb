@@ -1,7 +1,7 @@
 # config valid for current version and patch releases of Capistrano
 lock '~> 3.11.0'
 
-set :application, 'real_estate_researcher'
+set :application, 'top_lands_api'
 set :repo_url, 'git@github.com:dthtien/real_estate_researcher.git'
 set :user, 'deploy'
 set :puma_threads, [0, 6]

@@ -24,7 +24,8 @@
 .vscode
 client/
 .env
-config/database.yml.exampleclient/
+config/database.yml.example
+client/
 Gemfile.lock
 dump.tar
 
@@ -35,3 +36,4 @@ dump.tar
 yarn-debug.log*
 .yarn-integrity
 latest.dump
+config/database.yml
