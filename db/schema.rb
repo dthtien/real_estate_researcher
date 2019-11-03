@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_02_100708) do
+ActiveRecord::Schema.define(version: 2019_10_22_014817) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,7 +56,6 @@ ActiveRecord::Schema.define(version: 2019_11_02_100708) do
     t.float "square_meter_price"
     t.date "posted_date"
     t.index ["land_id"], name: "index_history_prices_on_land_id"
-    t.index ["total_price", "acreage", "land_id", "posted_date"], name: "history_prices_unique_information", unique: true
   end
 
   create_table "lands", force: :cascade do |t|
