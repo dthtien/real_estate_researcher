@@ -5,28 +5,44 @@ class Scrapers::LandDetail < Scrapers::Base
     slack_notifier.ping('Start scrapping!')
 
     Ward.where(finish: false).find_each do |ward|
-      page_count = ward.total_page - ward.scrapping_page
-      p ward.name
-      while page_count.positive?
-        p page_count
-        doc = page_content(ward.scrapping_link.freeze + "/p#{page_count}")
-        next if doc.blank?
-
-        land_list = doc.css('.product-list-page .search-productItem')
-        land_list.each do |land|
-          next if land.blank?
-
-          save_land!(land_attributes(land), ward)
-        end
-        page_count -= 1
-        ward.update_attribute(:scrapping_page, ward.scrapping_page + 1)
-      end
-
-      ward.update_attribute(:finish, true)
+      update_ward!(ward)
     end
   end
 
+  def call_with_district(district)
+    slack_notifier.ping('Start scrapping!')
+
+    district.wards.where(finish: false).find_each do |ward|
+      update_ward! ward
+    end
+  end
+
+  def update_ward!(ward)
+    page_count = ward.total_page - ward.scrapping_page
+
+    p ward.name
+    while page_count.positive?
+      p page_count
+      processing_land(ward, page_count)
+      page_count -= 1
+      ward.update_attribute(:scrapping_page, ward.scrapping_page + 1)
+    end
+    ward.update_attribute(:finish, true)
+  end
+
   private
+
+  def processing_land(ward, page_count)
+    doc = page_content(ward.scrapping_link.freeze + "/p#{page_count}")
+    return if doc.blank?
+
+    land_list = doc.css('.product-list-page .search-productItem')
+    land_list.each do |land|
+      next if land.blank?
+
+      save_land!(land_attributes(land), ward)
+    end
+  end
 
   def save_land!(attributes, ward)
     return if attributes.blank?
