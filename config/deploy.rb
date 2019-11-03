@@ -24,7 +24,7 @@ set :puma_init_active_record, true
 set :keep_releases, 5
 
 set :linked_files, %w[config/database.yml config/master.key config/puma.rb]
-set :rbenv_ruby, '2.5.1'
+set :rbenv_ruby, '2.6.0'
 
 ## Defaults:
 # set :scm,           :git
