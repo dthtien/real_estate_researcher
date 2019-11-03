@@ -35,5 +35,6 @@ dump.tar
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+latest.dump.*
 latest.dump
 config/database.yml
