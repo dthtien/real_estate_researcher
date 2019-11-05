@@ -15,7 +15,9 @@ class AddressSerializer < AddressGraphSerializer
       end
 
     if data.present?
-      AddressGraphSerializer.new(data).serializable_hash[:data]
+      AddressGraphSerializer.new(
+        data.with_history_prices
+      ).serializable_hash[:data]
     else
       data
     end
