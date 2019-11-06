@@ -46,7 +46,7 @@ class Address < ApplicationRecord
   end
 
   delegate :price, :logged_date, :lands_count_ratio, :price_ratio,
-           to: :latest_log
+           to: :latest_log, allow_nil: true
 
   def show_name
     self.class == Ward ? "#{name}, #{district.name}" : name

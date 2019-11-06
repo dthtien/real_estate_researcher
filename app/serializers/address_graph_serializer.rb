@@ -3,6 +3,6 @@ class AddressGraphSerializer < ApplicationSerializer
             :price_ratio, :alias_name
 
   attribute :lands_count do |object|
-    object.latest_log.lands_count
+    object.latest_log&.lands_count
   end
 end

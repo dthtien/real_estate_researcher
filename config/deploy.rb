@@ -23,7 +23,7 @@ set :puma_worker_timeout, nil
 set :puma_init_active_record, true
 set :keep_releases, 5
 
-sidekiq configuation
+# sidekiq configuation
 set :sidekiq_options_per_process, ['--queue critical', '--queue default']
 set :sidekiq_processes, 2
 
@@ -51,7 +51,7 @@ end
 
 namespace :deploy do
   desc "Make sure local git is in sync with remote."
-  task :check_revision doxwxwxw
+  task :check_revision do
     on roles(:app) do
       unless `git rev-parse HEAD` == `git rev-parse origin/master`
         puts "WARNING: HEAD is not the same as origin/master"
