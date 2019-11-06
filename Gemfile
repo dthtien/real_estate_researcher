@@ -30,7 +30,10 @@ gem "slack-notifier"
 gem 'exception_notification'
 gem 'nokogiri'
 gem 'dotenv-rails', groups: [:development, :test]
+
 gem 'sidekiq'
+gem 'capistrano-sidekiq', group: :development
+
 gem 'whenever', require: false
 gem 'fast_jsonapi'
 gem 'rack-cors'
@@ -38,5 +41,7 @@ gem 'whenever', require: false
 gem 'friendly_id', '~> 5.2.4'
 gem 'kaminari'
 gem "webpacker"
+gem 'sidekiq'
+gem "sidekiq-cron", "~> 1.1"
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

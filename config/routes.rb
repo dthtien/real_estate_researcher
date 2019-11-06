@@ -1,4 +1,9 @@
+require 'sidekiq/web'
+require 'sidekiq/cron/web'
+
 Rails.application.routes.draw do
+  mount Sidekiq::Web => '/sidekiq'
+
   namespace :v1, path: 'api/v1' do
     resources :addresses, only: %i[index show] do
       collection do
