@@ -24,8 +24,8 @@ set :puma_init_active_record, true
 set :keep_releases, 5
 
 # sidekiq configuation
-set :sidekiq_options_per_process, ['--queue critical', '--queue default']
-set :sidekiq_processes, 2
+# set :sidekiq_options_per_process, ['--queue critical', '--queue default']
+# set :sidekiq_processes, 2
 
 set :linked_files, %w[config/database.yml config/master.key config/puma.rb]
 set :rbenv_ruby, '2.6.0'

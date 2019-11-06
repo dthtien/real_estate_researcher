@@ -1,47 +1,47 @@
 first_scope_districts:
-  cron: "1 15 * * *"
+  cron: "1 16 * * *"
   class: "ScrappingLandsJob"
   queue: critical
   args: [ 0 ]
 
 second_scope_districts:
-  cron: "2 15 * * *"
+  cron: "2 16 * * *"
   class: "ScrappingLandsJob"
   queue: critical
   args: [ 3 ]
 
 third_scope_districts:
-  cron: "3 15 * * *"
+  cron: "3 16 * * *"
   class: "ScrappingLandsJob"
   queue: critical
   args: [ 6 ]
 
 fourth_scope_districts:
-  cron: "4 15 * * *"
+  cron: "4 16 * * *"
   class: "ScrappingLandsJob"
   queue: critical
   args: [ 9 ]
 
 fifth_scope_districts:
-  cron: "5 15 * * *"
+  cron: "5 16 * * *"
   class: "ScrappingLandsJob"
   queue: critical
   args: [ 12 ]
 
 sixth_scope_districts:
-  cron: "6 15 * * *"
+  cron: "6 16 * * *"
   class: "ScrappingLandsJob"
   queue: critical
-  args: [ 15 ]
+  args: [ 16 ]
 
 seventh_scope_districts:
-  cron: "7 15 * * *"
+  cron: "7 16 * * *"
   class: "ScrappingLandsJob"
   queue: critical
   args: [ 18 ]
 
 eighth_scope_districts:
-  cron: "8 15 * * *"
+  cron: "8 16 * * *"
   class: "ScrappingLandsJob"
   queue: critical
   args: [ 21 ]
