@@ -81,7 +81,7 @@ class Scrapers::LandDetail < Scrapers::Base
   end
 
   def save_history!(land)
-    square_meter_price = land.square_meter_price_was || land.square_meter_prices
+    square_meter_price = land.square_meter_price_was || land.square_meter_price
 
     HistoryPrice.create(
       total_price: land.total_price_was || land.total_price,
