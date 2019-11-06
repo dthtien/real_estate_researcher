@@ -1,5 +1,6 @@
 class Address < ApplicationRecord
   extend FriendlyId
+
   friendly_id :alias_name, use: :slugged
   has_many :price_loggers, -> { newest }, as: :loggable
 
