@@ -1,0 +1,71 @@
+defaults: &defaults
+  working_directory: ~/buildbox
+  docker:
+    - image: circleci/ruby:2.6.0
+      environment:
+        BUNDLE_PATH: vendor/bundle
+
+version: 2.0
+jobs:
+  # Testing step
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/buildbox
+
+      - run:
+          name: Testing first
+          command: echo "I am a testing step"
+
+  # Deployment step
+  deploy_production:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/buildbox
+
+      # Restore bundle cache
+      - restore_cache:
+          keys:
+          - toplands.com-{{ checksum "Gemfile.lock" }}
+
+      - run:
+          name: Install Node.js
+          command: |
+            curl -sSL "https://nodejs.org/dist/v8.15.0/node-v8.15.0-linux-x64.tar.xz" | sudo tar --strip-components=2 -xJ -C /usr/local/bin/ node-v8.15.0-linux-x64/bin/node
+            curl https://www.npmjs.com/install.sh | sudo bash
+      - run:
+          name: Install Yarn
+          command: curl -o- -L https://yarnpkg.com/install.sh | bash
+
+      - run:
+          name: Install Bundler
+          command: gem install bundler
+
+      - run:
+          name: Bundle Install
+          command: bundle check || bundle install --jobs=4 --retry=3 --path vendor/bundle
+
+      - save_cache:
+          key: toplands.com-{{ checksum "Gemfile.lock" }}
+          paths:
+            - ~/toplands.com/vendor/bundle
+
+      - run:
+          name: Deployment with Capistrano
+          command: bundle exec cap production deploy
+
+workflows:
+  version: 2
+  test-and-deploy:
+    jobs:
+      - test
+      - deploy_production:
+          requires:
+            - test
+          filters:
+            branches:
+              only: master

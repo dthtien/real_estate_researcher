@@ -1,5 +1,5 @@
 class ProvinceSerializer < ApplicationSerializer
-  attributes :name
+  attributes :name, :average_price, :lands_count
 
   attribute :children do |object|
     AddressGraphSerializer.new(
@@ -7,20 +7,19 @@ class ProvinceSerializer < ApplicationSerializer
     ).serializable_hash[:data]
   end
 
-  attribute :average_price do |object|
-    object.latest_log.price
-  end
-
   attribute :latest_updated_price do |object|
     object.latest_log.logged_date
   end
 
-  attribute :lands_count do |object|
-    object.latest_log.lands_count
-  end
-
   attribute :price_ratio do |object|
-    object.latest_log.price_ratio * 100
+    latest_log = object.latest_log
+
+    if latest_log.present?
+      old_price = latest_log.price
+      old_price.zero? ? 100 * (object.average_price - old_price) / old_price : 0
+    else
+      100
+    end
   end
 
   attribute :new_lands_count do
