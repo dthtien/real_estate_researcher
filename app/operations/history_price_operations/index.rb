@@ -30,11 +30,15 @@ class HistoryPriceOperations::Index
 
   def highest_price
     maximum = history_prices.maximum(:total_price)
+    return land.total_price if maximum.blank?
+
     maximum > land.total_price ? maximum : land.total_price
   end
 
   def lowest_price
     minimum = history_prices.calculatable.minimum(:total_price)
+    return land.total_price if minimum.blank?
+
     minimum < land.total_price ? minimum : land.total_price
   end
 end

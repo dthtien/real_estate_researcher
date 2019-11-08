@@ -1,5 +1,8 @@
 class Scrapers::LandDetail < Scrapers::Base
   REJECT_ADDRESS_TEXT = /(khu vực: |bán)/.freeze
+  BILLION = 10**9
+  MILLION = 10**6
+  THOUSANT = 10**3
 
   def call
     slack_notifier.ping('Start scrapping!')
@@ -101,8 +104,8 @@ class Scrapers::LandDetail < Scrapers::Base
     return if land_details.blank?
 
     address_detail = land_details.css('.diadiem-title').text.strip
-                                .downcase
-                                .gsub(REJECT_ADDRESS_TEXT, '')
+                                 .downcase
+                                 .gsub(REJECT_ADDRESS_TEXT, '')
     {
       title: title_element.text.strip.downcase,
       acreage: acreage,
@@ -117,17 +120,29 @@ class Scrapers::LandDetail < Scrapers::Base
   def parse_price(price, acreage)
     return [0, 0] if price.blank? || (price =~ /\d/).blank?
 
-    amount_list = { 'tỷ' => 10**9, 'triệu' => 10**6, 'trăm' => 100**3 }
+    amount_list = { 'tỷ' => BILLION, 'triệu' => MILLION, 'trăm' => THOUSANT }
     amount, unit = price.split
     original_price = amount.to_f * amount_list[unit.gsub('/m²', '')]
 
-    if price.include?('m²')
-      [original_price, original_price * acreage.to_f]
-    else
-      [(original_price / acreage.to_f).round(2), original_price]
-    end
+    correct_price(acreage, original_price, price)
   rescue TypeError => e
     slack_notifier.ping(e)
     nil
+  end
+
+  def correct_price(acreage, original_price, price)
+    if price.include?('m²')
+      square_meter_price = original_price
+      total_price = original_price * acreage.to_f
+    else
+      square_meter_price = (original_price / acreage.to_f).round(2)
+      total_price = original_price
+    end
+    if square_meter_price > BILLION
+      square_meter_price /= THOUSANT
+      total_price /= THOUSANT
+    end
+
+    [square_meter_price, total_price]
   end
 end

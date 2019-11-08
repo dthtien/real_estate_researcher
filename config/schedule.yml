@@ -45,3 +45,8 @@ eighth_scope_districts:
   class: "ScrappingLandsJob"
   queue: critical
   args: [ 21 ]
+
+correct_data:
+  cron: "0 */3 * * *"
+  class: "CorrectDataJob"
+  queue: default
