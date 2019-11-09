@@ -1,4 +1,6 @@
-:concurrency: 10
+:concurrency: 15
+:max_retries: 3
+:logfile: ./log/sidekiq.log
 production:
   :concurrency: 15
 :queues:
