@@ -8,43 +8,67 @@ second_scope_districts:
   cron: "2 16 * * *"
   class: "ScrappingLandsJob"
   queue: critical
-  args: [ 3 ]
+  args: [ 2 ]
 
 third_scope_districts:
   cron: "3 16 * * *"
   class: "ScrappingLandsJob"
   queue: critical
-  args: [ 6 ]
+  args: [ 4 ]
 
 fourth_scope_districts:
   cron: "4 16 * * *"
   class: "ScrappingLandsJob"
   queue: critical
-  args: [ 9 ]
+  args: [ 6 ]
 
 fifth_scope_districts:
   cron: "5 16 * * *"
   class: "ScrappingLandsJob"
   queue: critical
-  args: [ 12 ]
+  args: [ 8 ]
 
 sixth_scope_districts:
   cron: "6 16 * * *"
   class: "ScrappingLandsJob"
   queue: critical
-  args: [ 16 ]
+  args: [ 10 ]
 
 seventh_scope_districts:
   cron: "7 16 * * *"
   class: "ScrappingLandsJob"
   queue: critical
-  args: [ 18 ]
+  args: [ 12 ]
 
 eighth_scope_districts:
   cron: "8 16 * * *"
   class: "ScrappingLandsJob"
   queue: critical
-  args: [ 21 ]
+  args: [ 14 ]
+
+ninth_scope_districts:
+  cron: "7 16 * * *"
+  class: "ScrappingLandsJob"
+  queue: critical
+  args: [ 16 ]
+
+tenth_scope_districts:
+  cron: "8 16 * * *"
+  class: "ScrappingLandsJob"
+  queue: critical
+  args: [ 18 ]
+
+eleventh_scope_districts:
+  cron: "7 16 * * *"
+  class: "ScrappingLandsJob"
+  queue: critical
+  args: [ 20 ]
+
+twelfth_scope_districts:
+  cron: "8 16 * * *"
+  class: "ScrappingLandsJob"
+  queue: critical
+  args: [ 22 ]
 
 correct_data:
   cron: "0 */3 * * *"

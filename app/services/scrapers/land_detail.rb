@@ -7,7 +7,7 @@ class Scrapers::LandDetail < Scrapers::Base
   def call
     slack_notifier.ping('Start scrapping!')
 
-    Ward.where(finish: false).find_each do |ward|
+    Ward.not_finish.find_each do |ward|
       update_ward!(ward)
     end
   end

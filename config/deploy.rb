@@ -61,6 +61,17 @@ namespace :deploy do
     end
   end
 
+  desc 'correct lands data'
+  task :correct_data do
+    on roles(:app) do
+      within current_path do
+        with rails_env: :production do
+          execute :bundle, :exec, 'rake correct_data:start'
+        end
+      end
+    end
+  end
+
   desc 'Update crontab with whenever'
   task :update_cron do
     on roles(:app) do

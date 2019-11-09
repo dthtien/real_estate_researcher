@@ -1,8 +1,8 @@
 class ScrappingLandsJob < ApplicationJob
-  PER_PAGE = 3
+  PER_PAGE = 2
 
   def perform(offset)
-    District.offset(offset).limit(PER_PAGE).find_each do |district|
+    District.sort_by_created_at(offset, PER_PAGE).find_each do |district|
       Scrapers::LandDetail.new.call_with_district(district)
     end
   end

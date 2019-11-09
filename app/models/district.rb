@@ -5,6 +5,10 @@ class District < Address
   has_many :lands, through: :streets
   include HistoryPricable
 
+  scope :sort_by_created_at, (lambda do |offset, per_page|
+    order(created_at: :desc).offset(offset).limit(per_page)
+  end)
+
   def lands
     @lands ||= Land.district_relation(id)
   end
