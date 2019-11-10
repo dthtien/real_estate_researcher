@@ -138,9 +138,20 @@ class Scrapers::LandDetail < Scrapers::Base
       square_meter_price = (original_price / acreage.to_f).round(2)
       total_price = original_price
     end
+
+    parse_number(square_meter_price, total_price)
+  end
+
+  def parse_number(square_meter_price, total_price)
     if square_meter_price > BILLION
       square_meter_price /= THOUSANT
       total_price /= THOUSANT
+    end
+
+    if total_price.positive? && total_price < 10**8
+      increase_rate = 10 - total_price.to_i.to_s.size
+      total_price *= 10**increase_rate
+      square_meter_price *= 10**increase_rate
     end
 
     [square_meter_price, total_price]

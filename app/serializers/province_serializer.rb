@@ -1,10 +1,11 @@
 class ProvinceSerializer < ApplicationSerializer
   attributes :name, :average_price, :lands_count
 
-  attribute :children do |object|
-    AddressGraphSerializer.new(
-      object.districts.calculatable
-    ).serializable_hash[:data]
+  attribute :children do |object, params|
+    districts = object.districts.calculatable
+    districts = districts.ordering(params) if params.present?
+
+    AddressGraphSerializer.new(districts).serializable_hash[:data]
   end
 
   attribute :latest_updated_price do |object|

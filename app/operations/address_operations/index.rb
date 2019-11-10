@@ -4,6 +4,7 @@ class AddressOperations::Index
   def initialize(params = {})
     @params = params
     @address_names = params[:address_names]
+    @order = JSON.parse params[:order]
     @id = 'term'
   end
 
@@ -17,7 +18,7 @@ class AddressOperations::Index
       if @address_names.present?
         MixAddressGraphSerializer.new(self)
       else
-        ProvinceSerializer.new(@addresses)
+        ProvinceSerializer.new(@addresses, params: @order)
       end
   end
 
