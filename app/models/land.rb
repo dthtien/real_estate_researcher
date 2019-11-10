@@ -56,9 +56,8 @@ class Land < ApplicationRecord
   end)
 
   scope :ordering, (lambda do |params|
-
     if params['history_price']
-      order = params['history_pirce'] == 'desc' ? 'desc' : 'asc'
+      order = params['history_price'] == 'desc' ? 'desc' : 'asc'
       calculatable.order("history_prices_count #{order}")
     else
       calculatable.order(params)
