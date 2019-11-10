@@ -17,7 +17,8 @@ class AddressGraphSerializer < ApplicationSerializer
     def calculate_ratio(field, log, new_value)
       if log.present?
         old_value = log.send(field)
-        old_value.zero? ? 0 : (new_value - old_value) / old_value
+        value = old_value.zero? ? 0 : (new_value - old_value) / old_value
+        value.round(2)
       else
         1
       end

@@ -11,7 +11,6 @@ class Land < ApplicationRecord
     select('lands.*, COUNT(history_prices.id) history_prices_count')
       .left_outer_joins(:history_prices)
       .group(:id)
-      .order('history_prices_count desc')
   end)
 
   scope :district_relation, (lambda do |district_id|
@@ -54,5 +53,15 @@ class Land < ApplicationRecord
 
   scope :with_street_name, (lambda do
     select('lands.*, addresses.name as address').joins(:street)
+  end)
+
+  scope :ordering, (lambda do |params|
+
+    if params['history_price']
+      order = params['history_pirce'] == 'desc' ? 'desc' : 'asc'
+      calculatable.order("history_prices_count #{order}")
+    else
+      calculatable.order(params)
+    end
   end)
 end

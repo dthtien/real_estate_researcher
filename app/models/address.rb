@@ -21,7 +21,19 @@ class Address < ApplicationRecord
   end)
 
   scope :calculatable, (lambda do
-    joins(:lands).having('count(lands.id) > 0').group(:id)
+    select('addresses.*, count(lands.id) lands_count')
+      .joins(:lands)
+      .having('count(lands.id) > 0')
+      .group(:id)
+  end)
+
+  scope :ordering, (lambda do |params|
+    if params['avg_square_meter_price'].present?
+      avg_square_meter_prices
+        .order(params)
+    else
+      order(params)
+    end
   end)
 
   def latest_log

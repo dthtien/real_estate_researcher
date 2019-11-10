@@ -4,10 +4,10 @@ namespace :scrapping do
     Rails.logger = Logger.new(STDOUT)
   end
 
-  # task start: :environment do
-  #   Scrapers::DistrictDetail.new.call unless Address.any?
-  #   Scrapers::LandDetail.new.call
-  # end
+  task start: :environment do
+    Scrapers::DistrictDetail.new.call unless Address.any?
+    Scrapers::LandDetail.new.call
+  end
 
   task first_district: :environment do
     Scrapers::LandDetail.new.call_with_district(District.find(2))
