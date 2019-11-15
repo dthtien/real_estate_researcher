@@ -5,7 +5,7 @@ class Province < Address
   has_many :lands, through: :streets
 
   def lands
-    @lands ||= Land.with_history_prices.province_relation(id)
+    @lands ||= Land.province_relation(id)
   end
 
   def lands_count
