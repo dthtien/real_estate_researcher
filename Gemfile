@@ -24,6 +24,11 @@ group :development do
   gem 'capistrano-rbenv', '~> 2.1'
   gem 'capistrano3-puma'
   gem 'scout_apm'
+  gem 'rack-mini-profiler'
+  gem 'memory_profiler'
+  # For call-stack profiling flamegraphs
+  gem 'flamegraph'
+  gem 'stackprof'
 end
 
 gem "slack-notifier"
@@ -34,7 +39,6 @@ gem 'dotenv-rails', groups: [:development, :test]
 gem 'sidekiq', '>= 5.0', '<= 5.9'
 gem 'capistrano-sidekiq', group: :development
 
-gem 'whenever', require: false
 gem 'fast_jsonapi'
 gem 'rack-cors'
 gem 'whenever', require: false

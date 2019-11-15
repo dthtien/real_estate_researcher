@@ -3,7 +3,11 @@ require 'sidekiq'
 require 'sidekiq/web'
 
 Sidekiq::Web.use(Rack::Auth::Basic) do |user, password|
-  [user, password] == [ENV['SIDEKIQ_USERNAME'], ENV['SIDEKIQ_KEY']]
+  p '*'*20
+  p ENV['SIDEKIQ_USERNAME']
+  p ENV['SIDEKIQ_KEY']
+  p '*'*20
+  user == ENV['SIDEKIQ_USERNAME'] && password == ENV['SIDEKIQ_KEY']
 end
 
 if File.exist?(schedule_file) && Sidekiq.server?

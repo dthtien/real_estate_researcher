@@ -14,28 +14,7 @@ namespace :logging_prices do
   end
 
   task start: :environment do
-    logging = lambda do |address|
-      logger = address.price_loggers.build
-      logger.price = address.average_price
-      logger.logged_date = Time.current
-      logger.lands_count = address.lands_count
-      logger.lands_count_ratio = parse_ratio(
-        address.second_latest_log&.lands_count,
-        logger.lands_count
-      )
-      logger.price_ratio = parse_ratio(
-        address.second_latest_log&.price,
-        logger.price
-      )
-
-      logger.save
-    end
-
-    [Province, District, Ward, Street].each do |klass|
-      klass.transaction do
-        klass.find_each(&logging)
-      end
-    end
+    LoggingPriceJob.perform_later
   end
 end
 
