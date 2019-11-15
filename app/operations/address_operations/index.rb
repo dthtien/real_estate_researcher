@@ -4,7 +4,7 @@ class AddressOperations::Index
   def initialize(params = {})
     @params = params
     @address_names = params[:address_names]
-    @order = JSON.parse params[:order]
+    @order = JSON.parse(params[:order] || '{}')
     @id = 'term'
   end
 

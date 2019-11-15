@@ -2,6 +2,6 @@ namespace :correct_data do
   desc 'start correct data'
 
   task start: :environment do
-    Lands::Corrector.new.call
+    CorrectDataJob.perform_later
   end
 end
