@@ -203,6 +203,10 @@ GEM
     sidekiq-cron (1.1.0)
       fugit (~> 1.1)
       sidekiq (>= 4.2.1)
+    skylight (4.2.0)
+      skylight-core (= 4.2.0)
+    skylight-core (4.2.0)
+      activesupport (>= 4.2.0)
     slack-notifier (2.3.2)
     spring (2.1.0)
     spring-watcher-listen (2.0.1)
@@ -262,6 +266,7 @@ DEPENDENCIES
   scout_apm
   sidekiq (>= 5.0, <= 5.9)
   sidekiq-cron (~> 1.1)
+  skylight
   slack-notifier
   spring
   spring-watcher-listen (~> 2.0.0)

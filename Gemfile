@@ -46,5 +46,6 @@ gem 'friendly_id', '~> 5.2.4'
 gem 'kaminari'
 gem "webpacker"
 gem "sidekiq-cron", "~> 1.1"
+gem "skylight"
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

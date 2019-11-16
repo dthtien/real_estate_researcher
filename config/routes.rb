@@ -3,8 +3,7 @@ require 'sidekiq/cron/web'
 
 Rails.application.routes.draw do
   Sidekiq::Web.use Rack::Auth::Basic do |username, password|
-    ActiveSupport::SecurityUtils.secure_compare(::Digest::SHA256.hexdigest(username), ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_USERNAME"])) &
-    ActiveSupport::SecurityUtils.secure_compare(::Digest::SHA256.hexdigest(password), ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_KEY"]))
+    ENV["SIDEKIQ_USERNAME"] == username && ENV["SIDEKIQ_KEY"] == password
   end
 
   mount Sidekiq::Web => '/sidekiq'
