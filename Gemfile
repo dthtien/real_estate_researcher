@@ -40,7 +40,7 @@ gem 'sidekiq', '>= 5.0', '<= 5.9'
 gem 'capistrano-sidekiq', group: :development
 
 gem 'fast_jsonapi'
-gem 'rack-cors'
+gem "rack-cors", ">= 1.0.4"
 gem 'whenever', require: false
 gem 'friendly_id', '~> 5.2.4'
 gem 'kaminari'
