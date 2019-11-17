@@ -30,13 +30,6 @@ set :sidekiq_processes, 2
 
 set :linked_files, %w[config/database.yml config/master.key config/puma.rb]
 set :rbenv_ruby, '2.6.0'
-
-set :default_environment, {
-  'SIDEKIQ_USERNAME' => ENV['SIDEKIQ_USERNAME'],
-  'SIDEKIQ_KEY' => ENV['SIDEKIQ_KEY'],
-  'SKYLIGHT_AUTHENTICATION' => ENV['SKYLIGHT_AUTHENTICATION']
-}
-
 ## Defaults:
 # set :scm,           :git
 # set :branch,        :master
