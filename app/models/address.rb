@@ -1,5 +1,6 @@
 class Address < ApplicationRecord
   extend FriendlyId
+  CALCUTATING_METHODS = %i[lands_count average_price].freeze
 
   friendly_id :alias_name, use: :slugged
   has_many :price_loggers, -> { newest }, as: :loggable
@@ -21,9 +22,11 @@ class Address < ApplicationRecord
   end)
 
   scope :calculatable, (lambda do
-    select('addresses.*, count(lands.id) lands_count')
-      .joins(:lands)
-      .having('count(lands.id) > 0')
+    select('
+      addresses.*, count(lands.id) lands_count,
+      (AVG(lands.total_price)::decimal /  NULLIF(AVG(lands.acreage),0))
+      as average_price'
+    ).joins(:lands)
       .group(:id)
   end)
 
@@ -44,13 +47,13 @@ class Address < ApplicationRecord
     price_loggers.second
   end
 
-  def lands_count
-    @lands_count ||= lands.count
-  end
+  # def lands_count
+  #   @lands_count ||= lands.count
+  # end
 
-  def average_price
-    @average_price ||= calculating_average_price
-  end
+  # def average_price
+  #   @average_price ||= calculating_average_price
+  # end
 
   delegate :logged_date, :lands_count_ratio, :price_ratio,
            to: :latest_log, allow_nil: true
@@ -59,14 +62,15 @@ class Address < ApplicationRecord
     self.class == Ward ? "#{name}, #{district.name}" : name
   end
 
-  private
+  # private
 
   def calculating_average_price
-    price = lands.select(
-      '(AVG(lands.total_price)::decimal /  NULLIF(AVG(lands.acreage),0))
-        as average_price'
-    ).calculatable[0]
+    price = lands.average_price_calculate.calculatable[0]
 
-    price&.average_price || 0.0
+    @calculating_average_price ||= price&.average_price || 0.0
+  end
+
+  def calculating_lands_count
+    @calculating_lands_count ||= lands.count
   end
 end

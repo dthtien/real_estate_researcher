@@ -16,7 +16,7 @@ class AddressOperations::Index
   def parsed_addresses
     @parsed_addresses =
       if @address_names.present?
-        MixAddressGraphSerializer.new(self)
+        AddressIndexSerializer.new(self)
       else
         ProvinceSerializer.new(@addresses, params: @order)
       end
@@ -30,7 +30,8 @@ class AddressOperations::Index
 
   def parsing_addresses
     if @address_names.present?
-      Address.includes(:price_loggers).where(alias_name: params[:address_names])
+      Address.includes(:price_loggers)
+             .where(alias_name: params[:address_names])
     else
       Province.includes(:districts, :price_loggers).first
     end

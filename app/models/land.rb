@@ -10,7 +10,7 @@ class Land < ApplicationRecord
   scope :with_history_prices, (lambda do
     select('lands.*, COUNT(history_prices.id) history_prices_count')
       .left_outer_joins(:history_prices)
-      .group(:id)
+      .group(:id, 'addresses.name')
   end)
 
   scope :district_relation, (lambda do |district_id|
@@ -52,7 +52,9 @@ class Land < ApplicationRecord
   end)
 
   scope :with_street_name, (lambda do
-    select('lands.*, addresses.name as address').joins(:street)
+    select('lands.*, addresses.name address')
+      .joins(:street)
+      .group(:id, 'addresses.name')
   end)
 
   scope :ordering, (lambda do |params|
@@ -62,5 +64,12 @@ class Land < ApplicationRecord
     else
       calculatable.order(params)
     end
+  end)
+
+  scope :average_price_calculate, (lambda do
+    select(
+      '(AVG(lands.total_price)::decimal /  NULLIF(AVG(lands.acreage),0))
+        as average_price'
+    )
   end)
 end

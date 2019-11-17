@@ -11,9 +11,9 @@ class V1::AddressesController < ApplicationController
   end
 
   def show
-    address = Address.includes(:price_loggers).find_by_slug(params[:id])
+    opeation = AddressOperations::Show.new(params).execute
 
-    render json: AddressSerializer.new(address,
+    render json: AddressSerializer.new(opeation.address,
                                        params: JSON.parse(params[:order]))
                                   .serializable_hash
   end

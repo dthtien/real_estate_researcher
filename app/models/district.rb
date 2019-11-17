@@ -16,8 +16,4 @@ class District < Address
   def top_fluctuate_lands
     @top_fluctuate_lands ||= Land.top_fluctuate.district_relation(id)
   end
-
-  def lands_count
-    @lands_count ||= Land.district_relation(id).count
-  end
 end

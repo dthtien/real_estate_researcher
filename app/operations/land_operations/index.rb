@@ -2,7 +2,7 @@ class LandOperations::Index
   def initialize(params)
     @params = params
     @address_names = params[:address_names]
-    @order = JSON.parse(params[:order] || '{}')
+    @order = JSON.parse params[:order]
   end
 
   def rendering_lands
@@ -30,7 +30,8 @@ class LandOperations::Index
   end
 
   def with_ordering(lands)
-    order.present? ? lands.ordering(order) : lands
+    lands = order.present? ? lands.ordering(order) : lands
+    lands.with_street_name
   end
 
   def parse_lands
@@ -38,7 +39,7 @@ class LandOperations::Index
       if @address_names.present?
         customize_rendering
       else
-        with_ordering Land.includes(:street).with_history_prices
+        with_ordering Land.with_history_prices
       end
 
     parse_lands.page(params[:page].to_i + 1)

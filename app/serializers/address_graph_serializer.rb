@@ -1,6 +1,5 @@
-class AddressGraphSerializer < ApplicationSerializer
-  attributes :name, :slug, :logged_date, :alias_name, :lands_count
-
+class AddressGraphSerializer < BaseAddressSerializer
+  attributes :lands_count
   attribute(:price, &:average_price)
 
   attribute :price_ratio do |object|
