@@ -10,7 +10,7 @@ class Land < ApplicationRecord
   scope :with_history_prices, (lambda do
     select('lands.*, COUNT(history_prices.id) history_prices_count')
       .left_outer_joins(:history_prices)
-      .group(:id, 'addresses.name')
+      .group(:id)
   end)
 
   scope :district_relation, (lambda do |district_id|

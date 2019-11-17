@@ -31,7 +31,7 @@ class LandOperations::Index
 
   def with_ordering(lands)
     lands = order.present? ? lands.ordering(order) : lands
-    lands.with_street_name
+    lands.includes(:street)
   end
 
   def parse_lands
