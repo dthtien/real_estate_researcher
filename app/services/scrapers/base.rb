@@ -2,7 +2,7 @@
 require 'open-uri'
 class Scrapers::Base
   include ActiveSupport::Rescuable
-
+  PROHIBIT_CONTENT = 'sorry! something went wrong.'.freeze
   USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36'.freeze
   BASE_URL = 'https://batdongsan.com.vn/'.freeze
   TIMEOUT_EXEPTION = [
@@ -10,6 +10,8 @@ class Scrapers::Base
     Net::OpenTimeout,
     SocketError,
     Net::ReadTimeout,
+    Errno::ECONNRESET,
+    RuntimeError,
     StandardError
   ].freeze
 
@@ -18,14 +20,31 @@ class Scrapers::Base
     nil
   end
 
-  protected
+  def initialize
+    @proxy_url = ENV['DEFAULT_PROXY']
+  end
 
   def page_content(url)
-    sleep((0..3).to_a.sample)
-    Nokogiri::HTML(open(BASE_URL + url, 'User-Agent' => USER_AGENT, &:read))
+    sleep((5..10).to_a.sample)
+    requesting(url)
   rescue *TIMEOUT_EXEPTION => e
     slack_notifier.ping(e)
-    nil
+    @proxy_url = ProxyGenerator.execute if e.class != Errno::ETIMEDOUT
+    page_content(url)
+  end
+
+  def requesting(url)
+    respone = Nokogiri::HTML(
+      open(
+        BASE_URL + url,
+        'User-Agent' => USER_AGENT,
+        proxy: @proxy_url,
+        &:read
+      )
+    )
+    raise 'Invalid content' if respone == PROHIBIT_CONTENT
+
+    respone
   end
 
   def slack_notifier
