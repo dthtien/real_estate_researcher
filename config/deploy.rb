@@ -24,7 +24,7 @@ set :puma_init_active_record, true
 set :keep_releases, 5
 
 # sidekiq configuation
-set :sidekiq_options_per_process, ['--queue critical', '--queue default']
+set :sidekiq_options_per_process, ['--queue critical --queue default']
 set :sidekiq_processes, 1
 # set :sidekiq_log, File.join(shared_path, 'log', 'sidekiq.log')
 

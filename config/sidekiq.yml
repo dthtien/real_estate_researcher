@@ -1,8 +1,8 @@
-:concurrency: 4
+:concurrency: 2
 :max_retries: 3
 :logfile: ./log/sidekiq.log
 production:
-  :concurrency: 4
+  :concurrency: 2
 :queues:
   - critical
   - default
