@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_22_014817) do
+ActiveRecord::Schema.define(version: 2019_11_20_144834) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -88,6 +88,12 @@ ActiveRecord::Schema.define(version: 2019_10_22_014817) do
     t.integer "price_ratio"
     t.index ["loggable_id", "loggable_type", "logged_date"], name: "logged_date_unique_index", unique: true
     t.index ["loggable_id", "loggable_type"], name: "index_price_loggers_on_loggable_id_and_loggable_type"
+  end
+
+  create_table "proxies", force: :cascade do |t|
+    t.string "url"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   add_foreign_key "lands", "addresses"

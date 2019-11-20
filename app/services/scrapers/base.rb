@@ -22,14 +22,20 @@ class Scrapers::Base
 
   def initialize
     @proxy_url = ENV['DEFAULT_PROXY']
+    @retry_time = 0
   end
 
   def page_content(url)
     sleep((5..10).to_a.sample)
     requesting(url)
   rescue *TIMEOUT_EXEPTION => e
-    slack_notifier.ping(e)
-    @proxy_url = ProxyGenerator.execute if e.class != Errno::ETIMEDOUT
+    @retry_time += 1
+    if e.class.to_s != 'Errno::ETIMEDOUT' || @retry_time > 5
+      @proxy_url = ProxyGenerator.new.execute
+      slack_notifier.ping(e)
+      @retry_time = 0
+    end
+
     page_content(url)
   end
 
