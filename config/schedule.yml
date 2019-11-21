@@ -13,3 +13,8 @@ second_scope_districts:
   cron: "3 16 * * *"
   class: "ScrappingLandsJob"
   queue: critical
+
+post_bargain:
+  cron: "3 16 * * *"
+  class: "PostBargainJob"
+  queue: default
