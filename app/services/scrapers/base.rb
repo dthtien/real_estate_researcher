@@ -26,7 +26,7 @@ class Scrapers::Base
   end
 
   def page_content(url)
-    sleep((5..10).to_a.sample)
+    sleep((5..50).to_a.sample)
     requesting(url)
   rescue *TIMEOUT_EXEPTION => e
     @retry_time += 1
