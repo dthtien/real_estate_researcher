@@ -22,7 +22,7 @@ class Scrapers::Base
   end
 
   def initialize
-    @proxy_url = ENV['DEFAULT_PROXY']
+    @proxy_url = ProxyGenerator.new.execute
     @retry_time = 0
   end
 
