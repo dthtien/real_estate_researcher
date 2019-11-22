@@ -3,18 +3,17 @@ scrapping_addresses:
   class: "ScrappingAddressesJob"
   queue: default
 
-first_scope_districts:
-  cron: "2 16 * * *"
-  class: "ScrappingLandsJob"
-  queue: critical
-  args: [ 'asc' ]
-
-second_scope_districts:
-  cron: "3 16 * * *"
-  class: "ScrappingLandsJob"
-  queue: critical
-
 post_bargain:
   cron: "3 16 * * *"
   class: "PostBargainJob"
+  queue: default
+
+correct_data:
+  cron: "3 16 * * *"
+  class: "CorrectDataJob"
+  queue: default
+
+logging_prices:
+  cron: "3 16 * * *"
+  class: "LoggingPriceJob"
   queue: default

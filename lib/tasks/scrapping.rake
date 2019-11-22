@@ -4,8 +4,24 @@ namespace :scrapping do
     Rails.logger = Logger.new(STDOUT)
   end
 
-  task start: :environment do
-    Scrapers::DistrictDetail.new.call unless Address.any?
-    Scrapers::LandDetail.new.call
+  task first: :environment do
+    District.order(created_at: 'asc').each do |district|
+      Scrapers::LandDetail.new.call_with_district(district)
+    end
+  end
+
+  task second: :environment do
+    District.order(created_at: 'desc').each do |district|
+      Scrapers::LandDetail.new.call_with_district(district)
+    end
+  end
+
+  task third: :environment do
+    District.left_joins(:lands)
+            .having('COUNT(lands.id) = 0')
+            .group(:id)
+            .each do |district|
+      Scrapers::LandDetail.new.call_with_district(district)
+    end
   end
 end
