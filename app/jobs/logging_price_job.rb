@@ -3,6 +3,7 @@ class LoggingPriceJob < ApplicationJob
     [Province, District, Ward, Street].each do |klass|
       klass.transaction do
         klass.find_each do |address|
+          address.price_loggers.removing_logs.delete_all
           save_log! address
         end
       end
