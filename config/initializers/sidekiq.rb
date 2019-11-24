@@ -1,4 +1,4 @@
-schedule_file = "config/schedule.yml"
+schedule_file = 'config/schedule.yml'
 require 'sidekiq'
 require 'sidekiq/web'
 
@@ -7,7 +7,7 @@ Sidekiq::Web.class_eval do
 end
 
 Sidekiq::Web.use Rack::Auth::Basic do |username, password|
-  ENV["SIDEKIQ_USERNAME"] == username && ENV["SIDEKIQ_KEY"] == password
+  ENV['SIDEKIQ_USERNAME'] == username && ENV['SIDEKIQ_KEY'] == password
 end
 
 
