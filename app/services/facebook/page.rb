@@ -6,14 +6,14 @@ class Facebook::Page
     @http_client = HTTParty
   end
 
-  def post!(content)
+  def post!(content, options = {})
     request_url = "#{FB_GRAPH_API_URL}/#{ENV['FB_PAGE_ID']}/feed"
     http_client.post(
       request_url,
       body: {
         access_token: ENV['FB_PAGE_TOKEN'],
         message: content
-      }
+      }.merge(options)
     )
   end
 

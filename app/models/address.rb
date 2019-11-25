@@ -63,4 +63,17 @@ class Address < ApplicationRecord
   def calculating_lands_count
     @calculating_lands_count ||= lands.count
   end
+
+  def self.xml_generate
+    File.open('sitemap.xml', 'a') do |f|
+      Address.pluck(:slug).each do |s|
+        f.write("
+          <url>
+            <loc>https://toplands.tech/app/addresses/#{s}</loc>
+            <changefreq>daily</changefreq>
+          </url>
+        ")
+      end
+    end
+  end
 end
