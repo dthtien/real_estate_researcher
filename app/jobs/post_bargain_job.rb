@@ -3,7 +3,7 @@ class PostBargainJob < ApplicationJob
   FRONT_END_URL = 'https://toplands.tech/app/lands/'.freeze
 
   def perform
-    land = Land.calculatable.order(:total_price).first
+    land = Land.new_lands.calculatable.order(:total_price).first
     price = number_to_currency(land.total_price).gsub('$', '')
     content = <<-TXT
       #{land.description}
