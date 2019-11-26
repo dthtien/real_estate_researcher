@@ -27,7 +27,8 @@ class Address < ApplicationRecord
       (AVG(lands.total_price)::decimal /  NULLIF(AVG(lands.acreage),0))
       as average_price'
     ).joins(:lands)
-      .group(:id)
+    .where('lands.total_price > 0 AND lands.acreage > 0')
+    .group(:id)
   end)
 
   scope :ordering, (lambda do |params|
