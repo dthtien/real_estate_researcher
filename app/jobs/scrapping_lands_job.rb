@@ -1,6 +1,8 @@
 class ScrappingLandsJob < ApplicationJob
-  def perform(order = 'desc')
-    District.order(created_at: order).each do |district|
+  LIMIT = 8
+
+  def perform(offset = 0)
+    District.offset(offset).limit(LIMIT).each do |district|
       Scrapers::LandDetail.new.call_with_district(district)
     end
   end
