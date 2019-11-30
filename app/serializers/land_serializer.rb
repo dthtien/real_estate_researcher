@@ -3,6 +3,6 @@ class LandSerializer < ApplicationSerializer
              :description, :post_date, :slug
 
   attribute :change_times do |object|
-    object.history_prices_count
+    object.history_prices.length
   end
 end

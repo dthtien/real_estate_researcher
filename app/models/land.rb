@@ -57,13 +57,8 @@ class Land < ApplicationRecord
       .group(:id, 'addresses.name')
   end)
 
-  scope :ordering, (lambda do |params|
-    if params['history_price']
-      order = params['history_price'] == 'desc' ? 'desc' : 'asc'
-      calculatable.order("history_prices_count #{order}")
-    else
-      calculatable.order(params)
-    end
+  scope :rendering, (lambda do |params|
+    includes(:street, :history_prices).calculatable.order(params)
   end)
 
   scope :average_price_calculate, (lambda do

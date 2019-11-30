@@ -5,6 +5,10 @@ class AddressSerializer < AddressesSerializer
     calculate_ratio(:price, object.latest_log, object.calculating_average_price)
   end
 
+  attribute :new_lands_count do |object|
+    object.lands.new_lands_count
+  end
+
   attribute :lands_count_ratio do |object|
     calculate_ratio(:lands_count, object.latest_log, object.calculating_lands_count)
   end

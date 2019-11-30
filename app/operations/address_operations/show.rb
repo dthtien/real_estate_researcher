@@ -19,6 +19,11 @@ class AddressOperations::Show
     @address ||= Address.find_by_slug(params[:id])
   end
 
+  def rendering_data
+    AddressSerializer.new(address, params: JSON.parse(params[:order]))
+                     .serializable_hash
+  end
+
   private
 
   def scope

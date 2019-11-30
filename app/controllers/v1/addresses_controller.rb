@@ -11,10 +11,8 @@ class V1::AddressesController < ApplicationController
   end
 
   def show
-    opeation = AddressOperations::Show.new(params).execute
+    opeation = AddressOperations::Show.new(params)
 
-    render json: AddressSerializer.new(opeation.address,
-                                       params: JSON.parse(params[:order]))
-                                  .serializable_hash
+    render json: opeation.execute.rendering_data
   end
 end

@@ -19,19 +19,19 @@ class LandOperations::Index
 
   def customize_rendering
     if @address_names.size == 1
-      with_ordering addresses.first.lands.with_history_prices
+      with_ordering addresses.first.lands
     else
       land_list = addresses.map do |address|
-        with_ordering address.lands.with_history_prices
-      end.sum.sort_by(&:history_prices_count).reverse
+        with_ordering address.lands
+      end.sum.reverse
 
       Kaminari.paginate_array(land_list)
     end
   end
 
-  def with_ordering(lands)
-    lands = order.present? ? lands.ordering(order) : lands
-    lands.includes(:street)
+  def with_ordering(lands = Land)
+    lands = lands.with_history_prices if order['history_prices_count'].present?
+    lands.rendering(order)
   end
 
   def parse_lands
@@ -39,7 +39,7 @@ class LandOperations::Index
       if @address_names.present?
         customize_rendering
       else
-        with_ordering Land.with_history_prices
+        with_ordering
       end
 
     parse_lands.page(params[:page].to_i + 1)
