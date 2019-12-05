@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_20_144834) do
+ActiveRecord::Schema.define(version: 2019_12_05_143819) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,7 +72,10 @@ ActiveRecord::Schema.define(version: 2019_11_20_144834) do
     t.date "post_date"
     t.string "slug"
     t.string "alias_title"
+    t.date "expired_date"
+    t.datetime "deleted_at"
     t.index ["address_id"], name: "index_lands_on_address_id"
+    t.index ["deleted_at"], name: "index_lands_on_deleted_at"
     t.index ["slug"], name: "index_lands_on_slug", unique: true
   end
 

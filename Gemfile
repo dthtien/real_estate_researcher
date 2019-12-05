@@ -49,5 +49,6 @@ gem "sidekiq-cron", "~> 1.1"
 gem "skylight"
 gem "httparty"
 gem 'rails_admin', '~> 2.0'
+gem 'acts_as_paranoid', '~> 0.6.0'
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

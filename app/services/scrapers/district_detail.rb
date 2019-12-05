@@ -9,6 +9,7 @@ class Scrapers::DistrictDetail < Scrapers::Base
       ward_links = list_urls(link[:href])
       ward_links.each do |ward_link|
         update_ward(link: ward_link, district: district)
+        GC.start
       end
     end
   end

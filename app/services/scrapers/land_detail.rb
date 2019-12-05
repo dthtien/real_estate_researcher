@@ -45,6 +45,8 @@ class Scrapers::LandDetail < Scrapers::Base
 
       save_land!(land_attributes(land), ward)
     end
+
+    GC.start
   end
 
   def save_land!(attributes, ward)
@@ -67,13 +69,7 @@ class Scrapers::LandDetail < Scrapers::Base
       street: street,
       acreage: attributes[:acreage]
     )
-    land.source_url = attributes[:source_url]
-    land.title = attributes[:title]
-    land.alias_title = VietnameseSanitizer.execute!(attributes[:title])
-    land.description = attributes[:desciption]
-    land.post_date = attributes[:post_date]
-    land.square_meter_price = attributes[:square_meter_price]
-    land.total_price = attributes[:total_price]
+    land.attributes = attributes.except(:acreage)
 
     land
   end
@@ -101,19 +97,26 @@ class Scrapers::LandDetail < Scrapers::Base
     acreage = land_element.css('.product-area').text
     square_meter_price, total_price = parse_price(product_price, acreage)
     land_details = page_content(title_element.first[:href])
+
     return if land_details.blank?
 
     address_detail = land_details.css('.diadiem-title').text.strip
                                  .downcase
                                  .gsub(REJECT_ADDRESS_TEXT, '')
+    expired_date = land_details.css('.prd-more-info div:last-child')
+                               .children.last.text.strip
+    title = title_element.text.strip.downcase
+
     {
-      title: title_element.text.strip.downcase,
+      title: title,
+      alias_title: VietnameseSanitizer.execute!(title),
       acreage: acreage,
       address_detail: address_detail,
       square_meter_price: square_meter_price,
       total_price: total_price,
-      desciption: land_details.css('.pm-desc').text.strip,
-      post_date: land_element.css('.uptime').text.strip
+      description: land_details.css('.pm-desc').text.strip,
+      post_date: land_element.css('.uptime').text.strip,
+      expired_date: expired_date
     }
   end
 

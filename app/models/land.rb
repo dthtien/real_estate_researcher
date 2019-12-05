@@ -1,5 +1,6 @@
 class Land < ApplicationRecord
   extend FriendlyId
+  acts_as_paranoid
   friendly_id :alias_title, use: :slugged
 
   belongs_to :street, foreign_key: :address_id
