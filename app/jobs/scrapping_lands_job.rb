@@ -1,8 +1,8 @@
 class ScrappingLandsJob < ApplicationJob
-  LIMIT = 8
+  queue_as :critical
 
-  def perform(offset = 0)
-    District.offset(offset).limit(LIMIT).each do |district|
+  def perform(district_ids)
+    District.where(id: district_ids).each do |district|
       Scrapers::LandDetail.new.call_with_district(district)
     end
   end

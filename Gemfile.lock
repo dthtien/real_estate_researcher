@@ -312,7 +312,7 @@ DEPENDENCIES
   memory_profiler
   nokogiri
   pg (>= 0.18, < 2.0)
-  puma (~> 3.11)
+  puma (~> 3.12)
   rack-cors (>= 1.0.4)
   rack-mini-profiler
   rails (= 6.0.0)

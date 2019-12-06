@@ -1,17 +1,7 @@
-scrapping_lands_first:
+scrapping_lands:
   cron: "1 17 * * *"
-  class: "ScrappingLandsJob"
-  queue: critical
-scrapping_lands_second:
-  cron: "2 17 * * *"
-  class: "ScrappingLandsJob"
-  queue: critical
-  args: [8]
-scrapping_lands_last:
-  cron: "8 17 * * *"
-  class: "ScrappingLandsJob"
-  queue: critical
-  args: [16]
+  class: "DistributeJob"
+  queue: default
 scrapping_addresses:
   cron: "1 16 * * *"
   class: "ScrappingAddressesJob"
