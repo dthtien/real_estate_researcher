@@ -15,7 +15,7 @@ class Scrapers::LandDetail < Scrapers::Base
   def call_with_district(district)
     slack_notifier.ping('Start scrapping!')
 
-    district.wards.not_finish.find_each do |ward|
+    district.wards.not_finish.each do |ward|
       update_ward! ward
     end
   end
