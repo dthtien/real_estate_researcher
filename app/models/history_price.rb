@@ -1,4 +1,5 @@
 class HistoryPrice < ApplicationRecord
+  acts_as_paranoid
   belongs_to :land
 
   validates_uniqueness_of :total_price, scope: %i[acreage land_id posted_date]

@@ -10,7 +10,9 @@ class AddressSerializer < AddressesSerializer
   end
 
   attribute :lands_count_ratio do |object|
-    calculate_ratio(:lands_count, object.latest_log, object.calculating_lands_count)
+    calculate_ratio(
+      :lands_count, object.latest_log, object.calculating_lands_count
+    )
   end
 
   attribute :sub_addresses do |object, params|

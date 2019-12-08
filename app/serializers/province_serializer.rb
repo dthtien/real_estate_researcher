@@ -19,7 +19,7 @@ class ProvinceSerializer < ApplicationSerializer
 
     if latest_log.present?
       old_price = latest_log.price
-      old_price.zero? ? 100 * (object.average_price - old_price) / old_price : 0
+      old_price.zero? ? 100 * (object.calculating_average_price - old_price) / old_price : 0
     else
       100
     end
