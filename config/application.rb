@@ -38,6 +38,13 @@ module RealEstateResearcher
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Flash
     config.middleware.use Rack::MethodOverride
-    config.middleware.use ActionDispatch::Session::CookieStore, {:key=>"_real_estate_researcher_session"}
+    config.middleware.use(
+      ActionDispatch::Session::CookieStore,
+      key: '_real_estate_researcher_session'
+    )
+
+    if Rails.env.development?
+      Rails.application.middleware.use(Oink::Middleware, logger: Rails.logger)
+    end
   end
 end

@@ -16,6 +16,8 @@ group :development do
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'oink'
+  gem 'derailed'
 end
 
 group :development do
@@ -50,5 +52,6 @@ gem "skylight"
 gem "httparty"
 gem 'rails_admin', '~> 2.0'
 gem 'acts_as_paranoid', '~> 0.6.0'
+gem 'puma_worker_killer'
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

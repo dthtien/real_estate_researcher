@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_08_042347) do
+ActiveRecord::Schema.define(version: 2019_12_09_141121) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -58,6 +58,7 @@ ActiveRecord::Schema.define(version: 2019_12_08_042347) do
     t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_history_prices_on_deleted_at"
     t.index ["land_id"], name: "index_history_prices_on_land_id"
+    t.index ["total_price", "acreage", "land_id", "posted_date", "deleted_at"], name: "history_price_unique_index", unique: true
   end
 
   create_table "lands", force: :cascade do |t|

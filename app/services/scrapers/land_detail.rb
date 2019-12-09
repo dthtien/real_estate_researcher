@@ -7,7 +7,7 @@ class Scrapers::LandDetail < Scrapers::Base
   def call
     slack_notifier.ping('Start scrapping!')
 
-    Ward.not_finish.find_each do |ward|
+    Ward.not_finish.each do |ward|
       update_ward!(ward)
     end
   end
@@ -96,7 +96,8 @@ class Scrapers::LandDetail < Scrapers::Base
     product_price = land_element.css('.product-price').text
     acreage = land_element.css('.product-area').text
     square_meter_price, total_price = parse_price(product_price, acreage)
-    land_details = page_content(title_element.first[:href])
+    source_url = title_element.first[:href]
+    land_details = page_content(source_url)
 
     return if land_details.blank?
 
@@ -116,7 +117,8 @@ class Scrapers::LandDetail < Scrapers::Base
       total_price: total_price,
       description: land_details.css('.pm-desc').text.strip,
       post_date: land_element.css('.uptime').text.strip,
-      expired_date: expired_date
+      expired_date: expired_date,
+      source_url: source_url
     }
   end
 

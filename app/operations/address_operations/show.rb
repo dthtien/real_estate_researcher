@@ -20,7 +20,7 @@ class AddressOperations::Show
   end
 
   def rendering_data
-    AddressSerializer.new(address, params: JSON.parse(params[:order]))
+    AddressSerializer.new(address, params: JSON.parse(params[:order] || '{}'))
                      .serializable_hash
   end
 
