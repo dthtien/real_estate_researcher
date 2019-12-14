@@ -93,20 +93,20 @@ class Scrapers::LandDetail < Scrapers::Base
 
   def land_attributes(land_element)
     title_element = land_element.css('.p-title a')
-    product_price = land_element.css('.product-price').text
-    acreage = land_element.css('.product-area').text
+    product_price = land_element.css('.product-price')&.text
+    acreage = land_element.css('.product-area')&.text
     square_meter_price, total_price = parse_price(product_price, acreage)
     source_url = title_element.first[:href]
     land_details = page_content(source_url)
 
     return if land_details.blank?
 
-    address_detail = land_details.css('.diadiem-title').text.strip
+    address_detail = land_details.css('.diadiem-title')&.text.strip
                                  .downcase
                                  .gsub(REJECT_ADDRESS_TEXT, '')
     expired_date = land_details.css('.prd-more-info div:last-child')
-                               .children.last.text.strip
-    title = title_element.text.strip.downcase
+                               .children.last&.text.strip
+    title = title_element&.text.strip.downcase
 
     {
       title: title,
@@ -115,8 +115,8 @@ class Scrapers::LandDetail < Scrapers::Base
       address_detail: address_detail,
       square_meter_price: square_meter_price,
       total_price: total_price,
-      description: land_details.css('.pm-desc').text.strip,
-      post_date: land_element.css('.uptime').text.strip,
+      description: land_details.css('.pm-desc')&.text.strip,
+      post_date: land_element.css('.uptime')&.text.strip,
       expired_date: expired_date,
       source_url: source_url
     }
