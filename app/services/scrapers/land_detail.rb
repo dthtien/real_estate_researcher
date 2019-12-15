@@ -39,20 +39,27 @@ class Scrapers::LandDetail < Scrapers::Base
     doc = page_content(ward.scrapping_link.freeze + "/p#{page_count}")
     return if doc.blank?
 
+    land_attributes_list(doc).each do |attributes|
+      save_land!(attributes, ward)
+    end
+
+    GC.start
+  rescue ActiveRecord::RecordNotUnique => e
+    slack_notifier.ping(e)
+  end
+
+  def land_attributes_list(doc)
     land_list = doc.css('.product-list-page .search-productItem')
-    land_list.each do |land|
+
+    land_list.map do |land|
       next if land.blank?
 
-      save_land!(land_attributes(land), ward)
-      GC.start
-    rescue ActiveRecord::RecordNotUnique => e
-      slack_notifier.ping(e)
-    end
+      attributes = land_attributes(land)
+      attributes if attributes.present?
+    end.compact
   end
 
   def save_land!(attributes, ward)
-    return if attributes.blank?
-
     ApplicationRecord.connection.transaction do
       street = Street.find_or_create_by(
         name: attributes[:address_detail],

@@ -16,7 +16,7 @@ class Scrapers::Base
     StandardError
   ].freeze
 
-  rescue_from TIMEOUT_EXEPTIONS do |e|
+  rescue_from *TIMEOUT_EXEPTIONS do |e|
     slack_notifier.ping(e)
     nil
   end
