@@ -44,9 +44,10 @@ class Scrapers::LandDetail < Scrapers::Base
       next if land.blank?
 
       save_land!(land_attributes(land), ward)
+      GC.start
+    rescue ActiveRecord::RecordNotUnique => e
+      slack_notifier.ping(e)
     end
-
-    GC.start
   end
 
   def save_land!(attributes, ward)

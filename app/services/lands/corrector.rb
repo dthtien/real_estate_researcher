@@ -2,10 +2,6 @@ class Lands::Corrector
   def call
     Land.where('expired_date < ?', Date.current).destroy_all
 
-    Land.where('post_date < ?', 1.month.ago)
-        .where(expired_date: nil)
-        .destroy_all
-
     Land.where('square_meter_price != ? AND square_meter_price > ?',
                Float::INFINITY, 10**9).each do |land|
       land.total_price /= 1000
