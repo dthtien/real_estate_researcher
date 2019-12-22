@@ -33,7 +33,7 @@ class AddressOperations::Index
       Address.includes(:price_loggers)
              .where(alias_name: params[:address_names])
     else
-      Province.includes(:districts, :price_loggers).first
+      Province.includes(:price_loggers, :districts).first
     end
   end
 end

@@ -1,6 +1,6 @@
 class PriceLogger < ApplicationRecord
   belongs_to :loggable, polymorphic: true
-  validates_uniqueness_of :logged_date, scrope: %i[loggable_id loggable_type]
+  validates_uniqueness_of :logged_date, scope: %i[loggable_id loggable_type]
 
   scope :newest, -> { order(logged_date: :desc) }
   scope :removing_logs, (lambda do

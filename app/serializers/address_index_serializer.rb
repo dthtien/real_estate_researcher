@@ -8,8 +8,8 @@ class AddressIndexSerializer < ApplicationSerializer
           .map(&:calculating_average_price).sum / object.addresses.size
   end
 
-  attribute :latest_updated_price do |object|
-    object.latest_logs.first.logged_date
+  attribute :latest_updated_price do
+    Time.current
   end
 
   attribute :lands_count do |object|

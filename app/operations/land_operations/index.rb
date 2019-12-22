@@ -35,14 +35,11 @@ class LandOperations::Index
   end
 
   def parse_lands
-    parse_lands =
-      if @address_names.present?
-        customize_rendering
-      else
-        with_ordering
-      end
-
-    parse_lands.page(params[:page].to_i + 1)
+    if @address_names.present?
+      customize_rendering.page(params[:page].to_i + 1)
+    else
+      with_ordering.page(params[:page].to_i + 1)
+    end
   end
 
   def addresses

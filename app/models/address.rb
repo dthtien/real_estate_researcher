@@ -40,6 +40,9 @@ class Address < ApplicationRecord
     end
   end)
 
+  delegate :logged_date, :lands_count_ratio, :price_ratio,
+           to: :latest_log, allow_nil: true
+
   def latest_log
     @latest_log ||= price_loggers.first
   end
@@ -48,17 +51,12 @@ class Address < ApplicationRecord
     price_loggers.second
   end
 
-  delegate :logged_date, :lands_count_ratio, :price_ratio,
-           to: :latest_log, allow_nil: true
-
   def show_name
     self.class == Ward ? "#{name}, #{district.name}" : name
   end
 
   def calculating_average_price
-    price = lands.average_price_calculate.calculatable[0]
-
-    @calculating_average_price ||= price&.average_price || 0.0
+    lands.average_price_calculate
   end
 
   def calculating_lands_count

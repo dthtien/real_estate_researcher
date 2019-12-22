@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_09_141121) do
+ActiveRecord::Schema.define(version: 2019_12_22_144512) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,7 +66,7 @@ ActiveRecord::Schema.define(version: 2019_12_09_141121) do
     t.float "total_price"
     t.float "square_meter_price"
     t.text "address_detail"
-    t.bigint "address_id"
+    t.bigint "street_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "title"
@@ -77,9 +77,16 @@ ActiveRecord::Schema.define(version: 2019_12_09_141121) do
     t.string "alias_title"
     t.date "expired_date"
     t.datetime "deleted_at"
-    t.index ["address_id"], name: "index_lands_on_address_id"
+    t.bigint "ward_id"
+    t.bigint "district_id"
+    t.bigint "province_id"
     t.index ["deleted_at"], name: "index_lands_on_deleted_at"
+    t.index ["district_id"], name: "index_lands_on_district_id"
+    t.index ["province_id"], name: "index_lands_on_province_id"
     t.index ["slug"], name: "index_lands_on_slug", unique: true
+    t.index ["street_id"], name: "index_lands_on_deleted_at_address_id", where: "(deleted_at IS NULL)"
+    t.index ["street_id"], name: "index_lands_on_street_id"
+    t.index ["ward_id"], name: "index_lands_on_ward_id"
   end
 
   create_table "price_loggers", force: :cascade do |t|
@@ -102,5 +109,8 @@ ActiveRecord::Schema.define(version: 2019_12_09_141121) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  add_foreign_key "lands", "addresses"
+  add_foreign_key "lands", "addresses", column: "district_id"
+  add_foreign_key "lands", "addresses", column: "province_id"
+  add_foreign_key "lands", "addresses", column: "street_id"
+  add_foreign_key "lands", "addresses", column: "ward_id"
 end

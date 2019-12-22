@@ -66,18 +66,21 @@ class Scrapers::LandDetail < Scrapers::Base
         alias_name: VietnameseSanitizer.execute!(attributes[:address_detail]),
         parent_id: ward.id
       )
-      land = assign_land_detail(attributes, street)
+      land = assign_land_detail(attributes, street, ward)
       save_history!(land) if information_changed?(land)
       land.save!
     end
   end
 
-  def assign_land_detail(attributes, street)
+  def assign_land_detail(attributes, street, ward)
     land = Land.find_or_initialize_by(
       street: street,
       acreage: attributes[:acreage]
     )
     land.attributes = attributes.except(:acreage)
+    land.ward_id = ward.id
+    land.district_id = ward.district.id
+    land.province_id = ward.district.province.id
 
     land
   end

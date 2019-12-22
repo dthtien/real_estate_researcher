@@ -1,5 +1,9 @@
 class ProvinceSerializer < ApplicationSerializer
-  attributes :name, :lands_count
+  attribute :lands_count do |object|
+    object.lands.size
+  end
+
+  attributes :name
 
   attribute :children do |object, params|
     districts = object.districts.includes(:price_loggers).calculatable
@@ -25,7 +29,7 @@ class ProvinceSerializer < ApplicationSerializer
     end
   end
 
-  attribute :new_lands_count do
-    Land.new_lands_count
+  attribute :new_lands_count do |object|
+    object.lands.new_lands_count
   end
 end
