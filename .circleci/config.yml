@@ -60,7 +60,7 @@ jobs:
       
       - run:
           name: Add ssh
-          command: ssh-add -K ~/.ssh/id_rs
+          command: ssh-add ~/.ssh/id_rs
       
       - run:
           name: Deployment with Capistrano
