@@ -10,10 +10,10 @@ class LoggingPriceJob < ApplicationJob
 
   def save_log!(address)
     logger = address.price_loggers.build
-    logger.price = address.calculating_average_price
+    average_price = address.calculating_average_price
+    logger.price = average_price.is_a?(Numeric) ? average_price : 0
     logger.logged_date = Time.current
     logger.lands_count = address.calculating_lands_count
-
     logger.save
   end
 end
