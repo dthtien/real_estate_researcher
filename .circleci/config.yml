@@ -53,14 +53,6 @@ jobs:
           key: toplands.com-{{ checksum "Gemfile.lock" }}
           paths:
             - ~/toplands.com/vendor/bundle
-
-      - add_ssh_keys: # add private SSH key from CircleCI account based on fingerprint.
-          fingerprints:
-            - "63:a8:a0:26:b2:8a:6d:a3:1b:7a:39:e6:b4:45:dd:29"
-      
-      - run:
-          name: Add ssh
-          command: ssh-add ~/.ssh/id_rs
       
       - run:
           name: Deployment with Capistrano
