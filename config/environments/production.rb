@@ -4,7 +4,7 @@ Rails.application.configure do
     ExceptionNotification::Rack,
     slack: {
       webhook_url: ENV['SLACK_HOOK_URL'],
-      channel: '#real_estate_bugs'
+      channel: '#errors'
     }
   )
 
