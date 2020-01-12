@@ -13,7 +13,9 @@ class Scrapers::Base
     Errno::ECONNRESET,
     RuntimeError,
     Net::HTTPServerException,
-    StandardError
+    StandardError,
+    OpenSSL::SSL::SSLError,
+    EOFError
   ].freeze
 
   rescue_from *TIMEOUT_EXEPTIONS do |e|
