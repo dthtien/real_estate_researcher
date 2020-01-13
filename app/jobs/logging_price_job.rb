@@ -1,7 +1,6 @@
 class LoggingPriceJob < ApplicationJob
   def perform
     Address.find_each do |address|
-      address.price_loggers.removing_logs.delete_all
       save_log! address
     end
   end

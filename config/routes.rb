@@ -10,6 +10,8 @@ Rails.application.routes.draw do
       collection do
         get :address_names
       end
+
+      resources :price_loggers, only: %i[index]
     end
 
     resources :lands, only: %i[index show] do
