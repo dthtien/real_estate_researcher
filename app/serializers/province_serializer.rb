@@ -13,7 +13,7 @@ class ProvinceSerializer < ApplicationSerializer
   end
 
   attribute :latest_updated_price do |object|
-    object.latest_log.logged_date
+    Time.current.strftime("%d/%m/%Y")
   end
 
   attribute :average_price, &:calculating_average_price
