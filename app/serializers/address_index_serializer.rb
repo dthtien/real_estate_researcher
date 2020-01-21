@@ -4,8 +4,8 @@ class AddressIndexSerializer < ApplicationSerializer
   end
 
   attribute :average_price do |object|
-    object.addresses
-          .map(&:calculating_average_price).sum / object.addresses.size
+    avg_price = object.addresses.map(&:calculating_average_price).sum
+    avg_price / object.addresses.size
   end
 
   attribute :latest_updated_price do
