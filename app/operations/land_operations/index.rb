@@ -1,4 +1,6 @@
 class LandOperations::Index
+  DEFAULT_PRICE_ORDERING = ['0', '0'].freeze
+
   def initialize(params)
     @params = params
     @address_names = params[:address_names]
@@ -31,6 +33,11 @@ class LandOperations::Index
 
   def with_ordering(lands = Land)
     lands = lands.with_history_prices if order['history_prices_count'].present?
+    unless params[:price_range] == DEFAULT_PRICE_ORDERING
+      price_range = (params[:price_range].first..params[:price_range].last)
+      lands = lands.where(total_price: price_range)
+    end
+
     lands.rendering(order)
   end
 
