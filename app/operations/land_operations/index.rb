@@ -40,11 +40,11 @@ class LandOperations::Index
   def with_ordering(lands = Land)
     lands = lands.with_history_prices if order['history_prices_count'].present?
 
-    unless price_range == DEFAULT_PRICE_ORDERING
+    if price_range.present? && price_range != DEFAULT_PRICE_ORDERING
       lands = lands.with_total_price(price_range)
     end
 
-    unless acreage_range == DEFAULT_PRICE_ORDERING
+    if acreage_range.present? && acreage_range != DEFAULT_PRICE_ORDERING
       lands = lands.with_acreage(acreage_range)
     end
 
