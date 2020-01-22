@@ -5,6 +5,8 @@ class LandOperations::Index
     @params = params
     @address_names = params[:address_names]
     @order = JSON.parse params[:order]
+    @price_range = params[:price_range]
+    @acreage_range = params[:acreage_range]
   end
 
   def rendering_lands
@@ -15,9 +17,13 @@ class LandOperations::Index
     @lands ||= parse_lands
   end
 
+  def lands_count
+    lands.total_count
+  end
+
   private
 
-  attr_reader :params, :order
+  attr_reader :params, :order, :price_range, :acreage_range
 
   def customize_rendering
     if @address_names.size == 1
@@ -33,9 +39,13 @@ class LandOperations::Index
 
   def with_ordering(lands = Land)
     lands = lands.with_history_prices if order['history_prices_count'].present?
-    unless params[:price_range] == DEFAULT_PRICE_ORDERING
-      price_range = (params[:price_range].first..params[:price_range].last)
-      lands = lands.where(total_price: price_range)
+
+    unless price_range == DEFAULT_PRICE_ORDERING
+      lands = lands.with_total_price(price_range)
+    end
+
+    unless acreage_range == DEFAULT_PRICE_ORDERING
+      lands = lands.with_acreage(acreage_range)
     end
 
     lands.rendering(order)

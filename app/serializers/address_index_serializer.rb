@@ -9,7 +9,7 @@ class AddressIndexSerializer < ApplicationSerializer
   end
 
   attribute :latest_updated_price do
-    Time.current
+    Time.current.strftime('%d/%m/%Y')
   end
 
   attribute :lands_count do |object|

@@ -3,7 +3,8 @@ class V1::LandsController < ApplicationController
     operation = LandOperations::Index.new(params)
 
     render json: {
-      lands: operation.rendering_lands
+      lands: operation.rendering_lands,
+      lands_count: operation.lands_count
     }
   end
 
