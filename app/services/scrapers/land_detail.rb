@@ -142,7 +142,7 @@ class Scrapers::LandDetail < Scrapers::Base
       expired_date: expired_date,
       source_url: source_url,
       front_length: front_length.present? ? front_length.to_f : 0,
-      classification: land_classifications[classification]
+      classification: land_classifications[classification] || 8
     }
   end
 
