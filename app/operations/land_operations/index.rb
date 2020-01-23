@@ -29,8 +29,8 @@ class LandOperations::Index
               :front_length_range
 
   def customize_rendering
-    if @address_names.size == 1
-      with_ordering addresses.first.lands
+    if @address_names.is_a?(String) || @address_names.size == 1
+      with_ordering addresses.first.lands.includes(:history_prices)
     else
       land_list = addresses.map do |address|
         with_ordering address.lands
@@ -51,7 +51,6 @@ class LandOperations::Index
     end
 
     lands = lands.with_classification(classification) if classification.present?
-
     lands.rendering(order)
   end
 
@@ -59,7 +58,7 @@ class LandOperations::Index
     if @address_names.present?
       customize_rendering.page(params[:page].to_i + 1)
     else
-      with_ordering.page(params[:page].to_i + 1)
+      with_ordering.includes(:history_prices).page(params[:page].to_i + 1)
     end
   end
 

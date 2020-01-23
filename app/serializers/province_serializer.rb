@@ -6,7 +6,7 @@ class ProvinceSerializer < ApplicationSerializer
   attributes :name
 
   attribute :children do |object, params|
-    districts = object.districts.includes(:price_loggers).calculatable
+    districts = object.districts.calculatable
     districts = districts.ordering(params) if params.present?
 
     AddressGraphSerializer.new(districts).serializable_hash[:data]

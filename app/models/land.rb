@@ -45,11 +45,8 @@ class Land < ApplicationRecord
   end)
 
   scope :average_price_calculate, (lambda do
-    calculatable.present? ? calculatable.average(:square_meter_price) : 0
-  end)
-
-  scope :average_price_calculate, (lambda do
-    calculatable.present? ? calculatable.average(:square_meter_price) : 0
+    avg = calculatable.average(:square_meter_price)
+    avg.is_a?(Numeric) ? avg : 0
   end)
 
   scope :with_acreage_range, (lambda do |acreage_range|
