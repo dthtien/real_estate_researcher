@@ -3,6 +3,12 @@ class Scrapers::LandDetail < Scrapers::Base
   BILLION = 10**9
   MILLION = 10**6
   THOUSANT = 10**3
+  LAND_CLASSIFICATION_KEYS = [
+    'Bán căn hộ chung cư', 'Bán nhà riêng', 'Bán nhà biệt thự, liền kề',
+    'Bán nhà mặt phố', 'Bán đất nền dự án', 'Bán đất',
+    'Bán trang trại, khu nghỉ dưỡng', 'Bán kho, nhà xưởng',
+    'Bán loại bất động sản khác'
+  ].freeze
 
   def call
     slack_notifier.ping('Start scrapping!')
@@ -39,24 +45,22 @@ class Scrapers::LandDetail < Scrapers::Base
     doc = page_content(ward.scrapping_link.freeze + "/p#{page_count}")
     return if doc.blank?
 
-    land_attributes_list(doc).each do |attributes|
-      save_land!(attributes, ward)
-    end
+    save_lands!(doc, ward)
 
     GC.start
   rescue ActiveRecord::RecordNotUnique => e
     slack_notifier.ping(e)
   end
 
-  def land_attributes_list(doc)
+  def save_lands!(doc, ward)
     land_list = doc.css('.product-list-page .search-productItem')
 
-    land_list.map do |land|
+    land_list.each do |land|
       next if land.blank?
 
       attributes = land_attributes(land)
-      attributes if attributes.present?
-    end.compact
+      save_land!(attributes, ward) if attributes.present?
+    end
   end
 
   def save_land!(attributes, ward)
@@ -112,12 +116,19 @@ class Scrapers::LandDetail < Scrapers::Base
 
     return if land_details.blank?
 
-    address_detail = land_details.css('.diadiem-title')&.text.strip
+    address_detail = land_details.css('.diadiem-title'.freeze)&.text.strip
                                  .downcase
                                  .gsub(REJECT_ADDRESS_TEXT, '')
-    expired_date = land_details.css('.prd-more-info div:last-child')
+    expired_date = land_details.css('.prd-more-info div:last-child'.freeze)
                                .children.last&.text.strip
     title = title_element&.text.strip.downcase
+    front_length = land_details.css(
+      '#LeftMainContent__productDetail_frontEnd div.right'.freeze
+    ).text&.strip
+    classification = land_details.css(
+      '#product-other-detail div.row:first-child div.right'.freeze
+    ).text&.strip
+    classification = classification.split(' (').first if classification.present?
 
     {
       title: title,
@@ -129,8 +140,21 @@ class Scrapers::LandDetail < Scrapers::Base
       description: land_details.css('.pm-desc')&.text.strip,
       post_date: land_element.css('.uptime')&.text.strip,
       expired_date: expired_date,
-      source_url: source_url
+      source_url: source_url,
+      front_length: front_length.present? ? front_length.to_f : 0,
+      classification: land_classifications[classification]
     }
+  end
+
+  def land_classifications
+    @land_classifications ||= begin
+      classifications_hash = {}
+      LAND_CLASSIFICATION_KEYS.each_with_index do |key, index|
+        classifications_hash[key] = index
+      end
+
+      classifications_hash
+    end
   end
 
   def parse_price(price, acreage)

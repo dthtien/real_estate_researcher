@@ -9,6 +9,13 @@ class Land < ApplicationRecord
   has_one :district, through: :ward
   has_one :province, through: :district
 
+  enum classification: [
+    'ban can ho chung cu', 'ban nha rieng', 'ban nha biet thu, lien ke',
+    'ban nha mat pho', 'ban dat nen du an', 'ban dat',
+    'ban trang trai, khu nghi duong', 'ban kho, nha xuong',
+    'ban loai bat dong san khac'
+  ].freeze
+
   scope :with_history_prices, (lambda do
     select('lands.*, COUNT(history_prices.id) history_prices_count')
       .left_outer_joins(:history_prices)
@@ -45,11 +52,19 @@ class Land < ApplicationRecord
     calculatable.present? ? calculatable.average(:square_meter_price) : 0
   end)
 
-  scope :with_acreage, (lambda do |acreage_range|
+  scope :with_acreage_range, (lambda do |acreage_range|
     where(acreage: (acreage_range.first...acreage_range.last))
   end)
 
-  scope :with_total_price, (lambda do |total_price_range|
+  scope :with_price_range, (lambda do |total_price_range|
     where(total_price: (total_price_range.first...total_price_range.last))
+  end)
+
+  scope :with_front_length_range, (lambda do |front_length_range|
+    where(front_length: (front_length_range.first...front_length_range.last))
+  end)
+
+  scope :with_classification, (lambda do |classification|
+    where(classification: classification)
   end)
 end

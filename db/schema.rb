@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_21_013849) do
+ActiveRecord::Schema.define(version: 2020_01_23_045203) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,12 +80,16 @@ ActiveRecord::Schema.define(version: 2020_01_21_013849) do
     t.bigint "ward_id"
     t.bigint "district_id"
     t.bigint "province_id"
+    t.integer "classification", default: 8
+    t.float "front_length"
     t.index ["deleted_at"], name: "index_lands_on_deleted_at"
     t.index ["district_id"], name: "index_lands_on_district_id"
     t.index ["post_date"], name: "index_lands_on_post_date", where: "(deleted_at IS NULL)"
     t.index ["province_id"], name: "index_lands_on_province_id"
     t.index ["province_id"], name: "index_lands_on_province_id_with_deleted_at", where: "(deleted_at IS NULL)"
+    t.index ["province_id"], name: "index_lands_on_province_id_with_deleted_at_pric_and_acreage", where: "((deleted_at IS NULL) AND ((total_price > (0)::double precision) AND (acreage > (0)::double precision)))"
     t.index ["slug"], name: "index_lands_on_slug", unique: true
+    t.index ["street_id"], name: "index_lands_on_deleted_at_address_id", where: "(deleted_at IS NULL)"
     t.index ["street_id"], name: "index_lands_on_street_id"
     t.index ["ward_id"], name: "index_lands_on_ward_id"
   end

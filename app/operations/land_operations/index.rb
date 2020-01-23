@@ -7,6 +7,8 @@ class LandOperations::Index
     @order = JSON.parse params[:order]
     @price_range = params[:price_range]
     @acreage_range = params[:acreage_range]
+    @front_length_range = params[:front_length_range]
+    @classification = params[:classifications]
   end
 
   def rendering_lands
@@ -23,7 +25,8 @@ class LandOperations::Index
 
   private
 
-  attr_reader :params, :order, :price_range, :acreage_range
+  attr_reader :params, :order, :price_range, :acreage_range, :classification,
+              :front_length_range
 
   def customize_rendering
     if @address_names.size == 1
@@ -39,14 +42,15 @@ class LandOperations::Index
 
   def with_ordering(lands = Land)
     lands = lands.with_history_prices if order['history_prices_count'].present?
+    %i[price_range acreage_range front_length_range].each do |method_name|
+      condition = method(method_name).call
 
-    if price_range.present? && price_range != DEFAULT_PRICE_ORDERING
-      lands = lands.with_total_price(price_range)
+      if condition.present? && condition != DEFAULT_PRICE_ORDERING
+        lands = lands.send("with_#{method_name}", condition)
+      end
     end
 
-    if acreage_range.present? && acreage_range != DEFAULT_PRICE_ORDERING
-      lands = lands.with_acreage(acreage_range)
-    end
+    lands = lands.with_classification(classification) if classification.present?
 
     lands.rendering(order)
   end

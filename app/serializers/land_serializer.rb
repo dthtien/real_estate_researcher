@@ -5,4 +5,9 @@ class LandSerializer < ApplicationSerializer
   attribute :change_times do |object|
     object.history_prices.length
   end
+
+  attribute :classification do |object|
+    classififcation = Land.classifications[object.classification]
+    Scrapers::LandDetail::LAND_CLASSIFICATION_KEYS[classififcation]
+  end
 end
