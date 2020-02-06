@@ -1,14 +1,23 @@
 class PostBargainJob < ApplicationJob
   include ActionView::Helpers::NumberHelper
   FRONT_END_URL = 'https://toplands.tech/app/lands/'.freeze
+  MONITORING_DISTRICT_SLUGS = %w[ho-chi-minh thu-duc quan-12 quan-9].freeze
 
   def perform
-    land = Land.new_lands.calculatable.order(:total_price).first
+    Address.where(slug: MONITORING_DISTRICT_SLUGS).each do |address|
+      land = address.lands.first#.today_hot_deal
+      post!(land) if land.present?
+    end
+  end
+
+  private
+
+  def post!(land)
     price = number_to_currency(land.total_price).gsub('$', '')
     content = <<-TXT
       #{land.description}
-
-      Price: #{price} VND
+      Địa chỉ: #{land.full_address}
+      Giá: #{price} VND
     TXT
     return if land.blank?
 

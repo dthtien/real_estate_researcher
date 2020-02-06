@@ -63,7 +63,17 @@ class LandOperations::Index
   end
 
   def addresses
-    @addresses ||= Address.where(alias_name: @address_names)
-                          .or(Address.where(slug: @address_names))
+    @addresses ||= Address.where(alias_name: search_address_names)
+                          .or(Address.where(slug: search_address_names))
+  end
+
+  def search_address_names
+    striping_regex = /\"/
+
+    return @address_names.gsub(striping_regex, '') if @address_names.is_a?(String)
+
+    @address_names.map do |address_name|
+      address_name.gsub(striping_regex, '')
+    end
   end
 end

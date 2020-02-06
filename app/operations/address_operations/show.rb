@@ -37,7 +37,7 @@ class AddressOperations::Show
                                  when 'Ward'
                                    STREETS
                                  else
-                                  ''
+                                   ''
                                  end
   end
 end

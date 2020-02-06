@@ -5,9 +5,9 @@ class Land < ApplicationRecord
 
   has_many :history_prices, dependent: :destroy
   belongs_to :street
-  has_one :ward, through: :street
-  has_one :district, through: :ward
-  has_one :province, through: :district
+  belongs_to :ward
+  belongs_to :district
+  belongs_to :province
 
   enum classification: [
     'ban can ho chung cu', 'ban nha rieng', 'ban nha biet thu, lien ke',
@@ -64,4 +64,12 @@ class Land < ApplicationRecord
   scope :with_classification, (lambda do |classification|
     where(classification: classification)
   end)
+
+  scope :today_hot_deal, (lambda do
+    new_lands.calculatable.order(:total_price).limit(1).first
+  end)
+
+  def full_address
+    "#{street.name.titleize} - #{ward.name.titleize} - #{district.name.titleize}"
+  end
 end
