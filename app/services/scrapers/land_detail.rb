@@ -71,9 +71,25 @@ class Scrapers::LandDetail < Scrapers::Base
         parent_id: ward.id
       )
       land = assign_land_detail(attributes, street, ward)
+      set_user!(attributes[:user], land)
       save_history!(land) if information_changed?(land)
       land.save!
     end
+  end
+
+  def set_user!(user_attributes, land)
+    return if user_attributes[:phone_number].blank?
+
+    user = User.find_or_initialize_by(
+      phone_number: user_attributes[:phone_number]
+    )
+    user.attributes = user_attributes.except(:phone_number)
+    if land.new_record? || land.user_id.blank?
+      user.selling_times = user.selling_times + 1
+    end
+    user.agency = user.selling_times > 2
+    user.save!
+    land.user_id = user.id
   end
 
   def assign_land_detail(attributes, street, ward)
@@ -81,7 +97,7 @@ class Scrapers::LandDetail < Scrapers::Base
       street: street,
       acreage: attributes[:acreage]
     )
-    land.attributes = attributes.except(:acreage)
+    land.attributes = attributes.except(:acreage, :user)
     land.ward_id = ward.id
     land.district_id = ward.district.id
     land.province_id = ward.district.province.id
@@ -116,12 +132,12 @@ class Scrapers::LandDetail < Scrapers::Base
 
     return if land_details.blank?
 
-    address_detail = land_details.css('.diadiem-title'.freeze)&.text.strip
-                                 .downcase
+    address_detail = land_details.css('.diadiem-title'.freeze)&.text&.strip
+                                 &.downcase
                                  .gsub(REJECT_ADDRESS_TEXT, '')
     expired_date = land_details.css('.prd-more-info div:last-child'.freeze)
-                               .children.last&.text.strip
-    title = title_element&.text.strip.downcase
+                               .children.last&.text&.strip
+    title = title_element&.text&.strip&.downcase
     front_length = land_details.css(
       '#LeftMainContent__productDetail_frontEnd div.right'.freeze
     ).text&.strip
@@ -129,7 +145,17 @@ class Scrapers::LandDetail < Scrapers::Base
       '#product-other-detail div.row:first-child div.right'.freeze
     ).text&.strip
     classification = classification.split(' (').first if classification.present?
-
+    phone_number = land_details.css(
+      '#LeftMainContent__productDetail_contactMobile .contact-phone'
+    ).text.strip
+    username = land_details.css(
+      '#LeftMainContent__productDetail_contactName .right'
+    ).text
+    email = land_details.css('#contactEmail .contact-email').text
+    if email.present?
+      email = email[%r{\<a.+\/a\>}]
+      email = Nokogiri::HTML.parse(email).text
+    end
     {
       title: title,
       alias_title: VietnameseSanitizer.execute!(title),
@@ -142,7 +168,12 @@ class Scrapers::LandDetail < Scrapers::Base
       expired_date: expired_date,
       source_url: source_url,
       front_length: front_length.present? ? front_length.to_f : 0,
-      classification: land_classifications[classification] || 8
+      classification: land_classifications[classification] || 8,
+      user: {
+        email: email,
+        phone_number: phone_number,
+        name: username
+      }
     }
   end
 

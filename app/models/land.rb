@@ -8,6 +8,7 @@ class Land < ApplicationRecord
   belongs_to :ward
   belongs_to :district
   belongs_to :province
+  belongs_to :user, optional: true
 
   enum classification: [
     'ban can ho chung cu', 'ban nha rieng', 'ban nha biet thu, lien ke',
@@ -72,4 +73,6 @@ class Land < ApplicationRecord
   def full_address
     "#{street.name.titleize} - #{ward.name.titleize} - #{district.name.titleize}"
   end
+
+  delegate :agency, to: :user, allow_nil: true
 end

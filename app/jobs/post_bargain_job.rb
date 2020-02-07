@@ -5,9 +5,11 @@ class PostBargainJob < ApplicationJob
 
   def perform
     Address.where(slug: MONITORING_DISTRICT_SLUGS).each do |address|
-      land = address.lands.first#.today_hot_deal
+      land = address.lands.today_hot_deal
       post!(land) if land.present?
     end
+    land = Land.joins(:user).where(users: { agency: false }).today_hot_deal
+    post!(land) if land.present?
   end
 
   private

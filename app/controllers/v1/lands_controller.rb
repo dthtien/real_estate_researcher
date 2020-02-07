@@ -9,7 +9,7 @@ class V1::LandsController < ApplicationController
   end
 
   def show
-    land = Land.with_street_name.find_by_slug(params[:id])
+    land = Land.with_street_name.includes(:user).find_by_slug(params[:id])
 
     render json: LandDetailsSerializer.new(land).serializable_hash
   end

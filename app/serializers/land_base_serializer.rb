@@ -10,4 +10,8 @@ class LandBaseSerializer < ApplicationSerializer
   attribute :updated_at do |object|
     object.updated_at.strftime('%H:%M:%S %d-%m-%Y')
   end
+
+  attribute :change_times do |object|
+    object.history_prices.length
+  end
 end
