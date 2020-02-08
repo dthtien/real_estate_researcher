@@ -67,7 +67,14 @@ class Land < ApplicationRecord
   end)
 
   scope :today_hot_deal, (lambda do
-    new_lands.calculatable.order(:total_price).limit(1).first
+    new_lands.calculatable.order(:total_price).first
+  end)
+
+  scope :trusted_deal, (lambda do
+    joins(:user).where(users: { agency: false })
+                .where.not(user_id: nil)
+                .today_hot_deal
+                .first
   end)
 
   def full_address

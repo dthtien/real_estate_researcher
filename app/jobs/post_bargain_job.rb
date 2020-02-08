@@ -8,8 +8,8 @@ class PostBargainJob < ApplicationJob
       land = address.lands.today_hot_deal
       post!(land) if land.present?
     end
-    land = Land.joins(:user).where(users: { agency: false }).today_hot_deal
-    post!(land) if land.present?
+    land = Land.trusted_deal
+    post!(land) if land.present? && land.user_id.present?
   end
 
   private

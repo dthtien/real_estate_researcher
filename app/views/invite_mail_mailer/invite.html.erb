@@ -1,0 +1,14 @@
+<h3>Xin chào bạn <strong><%= @user.name%></strong></h3>
+
+<p>
+  Đât của bạn hiện đang rao ở <%= link_to 'Toplands', 'https://toplands.tech'%>.
+  <% if @land.present? %>
+    Bạn có thể kiểm tra ở <%= link_to 'Toplands', "https://toplands.tech/app/lands/#{@land.slug}"%>
+  <% end %>
+</p>
+<p>Cám ơn bạn đã đọc tin. Chúc bạn một ngày tốt lành</p>
+<br>
+<p>
+  <%= link_to 'Toplands', 'https://toplands.tech'%>. -
+  <i>Trang thống kê giá nhà đất ở thành phố Hồ Chí Minh</i>
+</p>
