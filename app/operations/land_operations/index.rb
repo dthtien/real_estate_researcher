@@ -9,6 +9,7 @@ class LandOperations::Index
     @acreage_range = params[:acreage_range]
     @front_length_range = params[:front_length_range]
     @classification = params[:classifications]
+    @keyword = params[:keyword]
   end
 
   def rendering_lands
@@ -26,7 +27,7 @@ class LandOperations::Index
   private
 
   attr_reader :params, :order, :price_range, :acreage_range, :classification,
-              :front_length_range
+              :front_length_range, :keyword
 
   def customize_rendering
     if @address_names.is_a?(String) || @address_names.size == 1
@@ -51,6 +52,7 @@ class LandOperations::Index
     end
 
     lands = lands.with_classification(classification) if classification.present?
+    lands = lands.search(keyword) if keyword.present?
     lands.rendering(order)
   end
 

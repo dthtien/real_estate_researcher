@@ -3,7 +3,7 @@ class User < ApplicationRecord
 
   def self.send_invite
     find_each do |user|
-      return if user.email.blank?
+      next if user.email.blank?
 
       InviteMailMailer.invite(user).deliver_now
     end
