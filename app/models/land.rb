@@ -74,7 +74,6 @@ class Land < ApplicationRecord
     joins(:user).where(users: { agency: false })
                 .where.not(user_id: nil)
                 .today_hot_deal
-                .first
   end)
 
   scope :search, (lambda do |keyword|
