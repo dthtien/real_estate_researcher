@@ -10,9 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_07_145958) do
+ActiveRecord::Schema.define(version: 2020_02_09_033711) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "btree_gin"
+  enable_extension "pg_trgm"
   enable_extension "plpgsql"
 
   create_table "addresses", force: :cascade do |t|
@@ -27,6 +29,8 @@ ActiveRecord::Schema.define(version: 2020_02_07_145958) do
     t.string "scrapping_link", default: "{}"
     t.integer "scrapping_page", default: 0
     t.string "slug"
+    t.index ["alias_name"], name: "index_addresses_on_alias_name", using: :gin
+    t.index ["name"], name: "index_addresses_on_name", using: :gin
     t.index ["parent_id"], name: "index_addresses_on_parent_id"
     t.index ["slug"], name: "index_addresses_on_slug", unique: true
     t.index ["type"], name: "addresses_partial_type_address", where: "((type)::text = 'Address'::text)"
@@ -83,6 +87,8 @@ ActiveRecord::Schema.define(version: 2020_02_07_145958) do
     t.integer "classification", default: 8
     t.float "front_length"
     t.bigint "user_id"
+    t.index ["address_detail"], name: "index_lands_on_address_detail", using: :gin
+    t.index ["alias_title"], name: "index_lands_on_alias_title", using: :gin
     t.index ["deleted_at"], name: "index_lands_on_deleted_at"
     t.index ["district_id"], name: "index_lands_on_district_id"
     t.index ["post_date"], name: "index_lands_on_post_date", where: "(deleted_at IS NULL)"
@@ -92,6 +98,7 @@ ActiveRecord::Schema.define(version: 2020_02_07_145958) do
     t.index ["slug"], name: "index_lands_on_slug", unique: true
     t.index ["street_id"], name: "index_lands_on_deleted_at_address_id", where: "(deleted_at IS NULL)"
     t.index ["street_id"], name: "index_lands_on_street_id"
+    t.index ["title"], name: "index_lands_on_title", using: :gin
     t.index ["user_id"], name: "index_lands_on_user_id"
     t.index ["ward_id"], name: "index_lands_on_ward_id"
   end

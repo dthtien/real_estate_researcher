@@ -82,11 +82,10 @@ class Land < ApplicationRecord
       lands.address_detail ILIKE ? OR
       lands.title ILIKE ? OR
       lands.alias_title ILIKE ? OR
-      lands.description ILIKE ? OR
       addresses.name ILIKE ? OR
       addresses.alias_name ILIKE ?',
       "%#{keyword}%", "%#{keyword}%", "%#{keyword}%", "%#{keyword}%",
-      "%#{keyword}%", "%#{keyword}%"
+      "%#{keyword}%"
     )
   end)
 
