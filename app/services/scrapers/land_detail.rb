@@ -3,6 +3,8 @@ class Scrapers::LandDetail < Scrapers::Base
   BILLION = 10**9
   MILLION = 10**6
   THOUSANT = 10**3
+  LARGE_IMAGE_SIZE = '745x510'.freeze
+  THUMB_IMAGE_SIZE = '200x200'.freeze
   LAND_CLASSIFICATION_KEYS = [
     'Bán căn hộ chung cư', 'Bán nhà riêng', 'Bán nhà biệt thự, liền kề',
     'Bán nhà mặt phố', 'Bán đất nền dự án', 'Bán đất',
@@ -152,10 +154,24 @@ class Scrapers::LandDetail < Scrapers::Base
       '#LeftMainContent__productDetail_contactName .right'
     ).text
     email = land_details.css('#contactEmail .contact-email').text
+
     if email.present?
       email = email[%r{\<a.+\/a\>}]
       email = Nokogiri::HTML.parse(email).text
     end
+
+    images = land_details.css('.list-img img')
+
+    if images.present?
+      images = images.map do |image|
+        src = image.attr('src')
+        {
+          thumb: src,
+          origin: src.gsub(THUMB_IMAGE_SIZE, LARGE_IMAGE_SIZE)
+        }
+      end
+    end
+
     {
       title: title,
       alias_title: VietnameseSanitizer.execute!(title),
@@ -169,6 +185,7 @@ class Scrapers::LandDetail < Scrapers::Base
       source_url: source_url,
       front_length: front_length.present? ? front_length.to_f : 0,
       classification: land_classifications[classification] || 8,
+      images: images.presence || [],
       user: {
         email: email,
         phone_number: phone_number,

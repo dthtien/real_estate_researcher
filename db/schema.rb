@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_09_033711) do
+ActiveRecord::Schema.define(version: 2020_02_14_132329) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
@@ -87,6 +87,7 @@ ActiveRecord::Schema.define(version: 2020_02_09_033711) do
     t.integer "classification", default: 8
     t.float "front_length"
     t.bigint "user_id"
+    t.jsonb "images", default: [], array: true
     t.index ["address_detail"], name: "index_lands_on_address_detail", using: :gin
     t.index ["alias_title"], name: "index_lands_on_alias_title", using: :gin
     t.index ["deleted_at"], name: "index_lands_on_deleted_at"

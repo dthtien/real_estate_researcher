@@ -92,5 +92,5 @@ class Land < ApplicationRecord
     "#{street.name.titleize} - #{ward.name.titleize} - #{district.name.titleize}"
   end
 
-  delegate :agency, to: :user, allow_nil: true
+  delegate :agency, :email, :name, :phone_number, to: :user, allow_nil: true
 end

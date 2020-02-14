@@ -1,6 +1,7 @@
 class PostBargainJob < ApplicationJob
   include ActionView::Helpers::NumberHelper
   FRONT_END_URL = 'https://toplands.tech/app/lands/'.freeze
+  NOT_PROVIDE = 'Không cung cấp'.freeze
   MONITORING_DISTRICT_SLUGS = %w[ho-chi-minh thu-duc quan-12 quan-9].freeze
 
   def perform
@@ -14,15 +15,33 @@ class PostBargainJob < ApplicationJob
 
   private
 
-  def post!(land)
+  def message(land)
     price = number_to_currency(land.total_price).gsub('$', '')
-    content = <<-TXT
+    link = FRONT_END_URL + land.slug
+
+    <<-TXT
       #{land.description}
       Địa chỉ: #{land.full_address}
       Giá: #{price} VND
+      Người bán: #{land.name || NOT_PROVIDE}}
+      SĐT: #{land.phone_number || NOT_PROVIDE}
+      Email: #{land.email || NOT_PROVIDE}
+      Xem chi tiết tại: #{link}
     TXT
-    return if land.blank?
+  end
 
-    Facebook::Page.new.post!(content, link: FRONT_END_URL + land.slug)
+  def post!(land)
+    page = Facebook::Page.new
+    options = {}
+
+    if land.images.present?
+      options[:attached_media] = page.upload_images!(land.images).map do |id|
+        { media_fbid: id }
+      end
+    else
+      options[:link] = FRONT_END_URL + land.slug
+    end
+
+    page.post!(message(land), options)
   end
 end
