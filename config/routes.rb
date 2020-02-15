@@ -16,6 +16,7 @@ Rails.application.routes.draw do
 
     resources :lands, only: %i[index show] do
       resources :history_prices, only: %i[index]
+      resource :user
     end
   end
 end
