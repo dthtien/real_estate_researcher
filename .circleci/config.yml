@@ -57,6 +57,9 @@ jobs:
       - run:
           name: Deployment with Capistrano
           command: bundle exec cap production deploy
+      - run:
+          name: Notice Slack
+          command: bundle exec rake ping:start
 
 workflows:
   version: 2
