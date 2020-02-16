@@ -1,5 +1,6 @@
 class Land < ApplicationRecord
   extend FriendlyId
+  include XmlGenerable
   acts_as_paranoid
   friendly_id :alias_title, use: :slugged
 
@@ -93,17 +94,4 @@ class Land < ApplicationRecord
   end
 
   delegate :agency, :email, :name, :phone_number, to: :user, allow_nil: true
-
-  def self.xml_generate
-    File.open('sitemap.xml', 'a') do |f|
-      Address.pluck(:slug).each do |s|
-        f.write("
-          <url>
-            <loc>https://toplands.tech/app/lands/#{s}</loc>
-            <changefreq>daily</changefreq>
-          </url>
-        ")
-      end
-    end
-  end
 end

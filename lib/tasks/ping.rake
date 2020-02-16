@@ -4,6 +4,6 @@ namespace :ping do
       defaults(channel: '#errors', username: 'notifier')
     end
 
-    slack_notifier.ping('Deploy success');
+    slack_notifier.ping('Deploy success')
   end
 end
