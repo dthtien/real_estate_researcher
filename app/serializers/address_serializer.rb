@@ -1,18 +1,20 @@
 class AddressSerializer < AddressesSerializer
   attribute(:name, &:show_name)
 
-  attribute :price_ratio do |object|
-    calculate_ratio(:price, object.latest_log, object.calculating_average_price)
+  attribute :land_only_price do |object|
+    object.lands.land_only_price
   end
 
-  attribute :new_lands_count do |object|
-    object.lands.new_lands_count
+  attribute :apartment_price do |object|
+    object.lands.apartment_price
   end
 
-  attribute :lands_count_ratio do |object|
-    calculate_ratio(
-      :lands_count, object.latest_log, object.calculating_lands_count
-    )
+  attribute :farm_price do |object|
+    object.lands.farm_price
+  end
+
+  attribute :house_price do |object|
+    object.lands.house_price
   end
 
   attribute :sub_addresses do |object, params|
@@ -27,28 +29,12 @@ class AddressSerializer < AddressesSerializer
       else
         []
       end
-
     if data.present?
       data = data.includes(:price_loggers).calculatable
       data = data.ordering(params) if params.present?
-
       AddressGraphSerializer.new(data).serializable_hash[:data]
     else
       data
-    end
-  end
-
-  class << self
-    private
-
-    def calculate_ratio(field, log, new_value)
-      if log.present?
-        old_value = log.send(field)
-        value = old_value.to_f.zero? ? 0 : (new_value - old_value) / old_value
-        value.round(2)
-      else
-        1
-      end
     end
   end
 end

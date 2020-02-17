@@ -17,7 +17,7 @@ correct_data:
   queue: default
 
 logging_prices:
-  cron: "4 17 * * *"
+  cron: "0 0 * * SUN"
   class: "LoggingPriceJob"
   queue: default
 

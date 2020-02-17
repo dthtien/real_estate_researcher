@@ -16,7 +16,7 @@ class AddressOperations::Show
   end
 
   def address
-    @address ||= Address.find_by_slug(params[:id])
+    @address ||= Address.includes(:lands).find_by_slug(params[:id])
   end
 
   def rendering_data

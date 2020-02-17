@@ -47,8 +47,7 @@ class Land < ApplicationRecord
   end)
 
   scope :average_price_calculate, (lambda do
-    avg = calculatable.average(:square_meter_price)
-    avg.is_a?(Numeric) ? avg : 0
+    avg = calculatable.average(:square_meter_price).to_f
   end)
 
   scope :with_acreage_range, (lambda do |acreage_range|
@@ -87,6 +86,22 @@ class Land < ApplicationRecord
       "%#{keyword}%", "%#{keyword}%", "%#{keyword}%", "%#{keyword}%",
       "%#{keyword}%"
     )
+  end)
+
+  scope :land_only_price, (lambda do
+    where(classification: [4, 5]).calculatable.average(:square_meter_price).to_f
+  end)
+
+  scope :apartment_price, (lambda do
+    where(classification: 0).calculatable.average(:square_meter_price).to_f
+  end)
+
+  scope :house_price, (lambda do
+    where(classification: [1, 2, 3, 7]).calculatable.average(:square_meter_price).to_f
+  end)
+
+  scope :farm_price, (lambda do
+    where(classification: 8).calculatable.average(:square_meter_price).to_f
   end)
 
   def full_address

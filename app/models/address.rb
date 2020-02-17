@@ -57,7 +57,7 @@ class Address < ApplicationRecord
   end
 
   def calculating_average_price
-    lands.average_price_calculate
+    @calculating_average_price ||= lands.average_price_calculate
   end
 
   def calculating_lands_count

@@ -1,5 +1,6 @@
 class LoggingPriceJob < ApplicationJob
   def perform
+    PriceLogger.where('updated_at <= ?', 1.month.ago).destroy_all
     Address.find_each do |address|
       save_log! address
     end
