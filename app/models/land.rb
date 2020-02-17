@@ -66,16 +66,6 @@ class Land < ApplicationRecord
     where(classification: classification)
   end)
 
-  scope :today_hot_deal, (lambda do
-    new_lands.calculatable.order(:total_price).first
-  end)
-
-  scope :trusted_deal, (lambda do
-    joins(:user).where(users: { agency: false })
-                .where.not(user_id: nil)
-                .today_hot_deal
-  end)
-
   scope :search, (lambda do |keyword|
     joins(:street).where('
       lands.address_detail ILIKE ? OR
@@ -88,21 +78,37 @@ class Land < ApplicationRecord
     )
   end)
 
-  scope :land_only_price, (lambda do
-    where(classification: [4, 5]).calculatable.average(:square_meter_price).to_f
-  end)
+  class << self
+    def land_only_price
+      where(classification: [4, 5])
+        .calculatable
+        .average(:square_meter_price).to_f
+    end
 
-  scope :apartment_price, (lambda do
-    where(classification: 0).calculatable.average(:square_meter_price).to_f
-  end)
+    def apartment_price
+      where(classification: 0).calculatable.average(:square_meter_price).to_f
+    end
 
-  scope :house_price, (lambda do
-    where(classification: [1, 2, 3, 7]).calculatable.average(:square_meter_price).to_f
-  end)
+    def house_price
+      where(classification: [1, 2, 3, 7])
+        .calculatable
+        .average(:square_meter_price).to_f
+    end
 
-  scope :farm_price, (lambda do
-    where(classification: 8).calculatable.average(:square_meter_price).to_f
-  end)
+    def farm_price
+      where(classification: 8).calculatable.average(:square_meter_price).to_f
+    end
+
+    def today_hot_deal
+      new_lands.calculatable.order(:total_price).first
+    end
+
+    def trusted_deal
+      joins(:user).where(users: { agency: false })
+                  .where.not(user_id: nil)
+                  .today_hot_deal
+    end
+  end
 
   def full_address
     "#{street.name.titleize} - #{ward.name.titleize} - #{district.name.titleize}"
