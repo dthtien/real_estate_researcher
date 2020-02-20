@@ -23,7 +23,7 @@ class PostBargainJob < ApplicationJob
       #{land.description}
       Địa chỉ: #{land.full_address}
       Giá: #{price} VND
-      Người bán: #{land.name || NOT_PROVIDE}
+      Người bán: #{land.name&.strip || NOT_PROVIDE}
       SĐT: #{land.phone_number || NOT_PROVIDE}
       Email: #{land.email || NOT_PROVIDE}
       Xem chi tiết tại: #{link}
