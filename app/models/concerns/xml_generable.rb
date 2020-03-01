@@ -17,6 +17,7 @@ module XmlGenerable
               <url>
                 <loc>https://toplands.tech/app/#{table_name}/#{s}</loc>
                 <changefreq>daily</changefreq>
+                <lastmod>#{Time.current}</lastmod>
               </url>
             "
 
