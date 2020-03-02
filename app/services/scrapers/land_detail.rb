@@ -66,14 +66,16 @@ class Scrapers::LandDetail < Scrapers::Base
   end
 
   def save_land!(attributes, ward)
-    ApplicationRecord.connection.transaction do
-      street = Street.find_or_create_by(
-        name: attributes[:address_detail],
-        alias_name: VietnameseSanitizer.execute!(attributes[:address_detail]),
-        parent_id: ward.id
-      )
-      land = assign_land_detail(attributes, street, ward)
-      set_user!(attributes[:user], land)
+    street = Street.find_or_create_by(
+      name: attributes[:address_detail],
+      alias_name: VietnameseSanitizer.execute!(attributes[:address_detail]),
+      parent_id: ward.id
+    )
+    land = assign_land_detail(attributes, street, ward)
+
+    Land.transaction do
+      user = set_user!(attributes[:user], land)
+      land.user_id = user.id if user.present?
       save_history!(land) if information_changed?(land)
       land.save!
     end
@@ -91,7 +93,8 @@ class Scrapers::LandDetail < Scrapers::Base
     end
     user.agency = user.selling_times > 2
     user.save!
-    land.user_id = user.id
+
+    user
   end
 
   def assign_land_detail(attributes, street, ward)
