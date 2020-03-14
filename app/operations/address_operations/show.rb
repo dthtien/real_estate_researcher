@@ -9,8 +9,7 @@ class AddressOperations::Show
   end
 
   def execute
-    @address = scope.calculatable
-                    .includes(:price_loggers, sub_addresses_including)
+    @address = scope.includes(:price_loggers, sub_addresses_including)
                     .find_by_slug(params[:id])
     self
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_14_132329) do
+ActiveRecord::Schema.define(version: 2020_03_14_132913) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
@@ -29,6 +29,11 @@ ActiveRecord::Schema.define(version: 2020_02_14_132329) do
     t.string "scrapping_link", default: "{}"
     t.integer "scrapping_page", default: 0
     t.string "slug"
+    t.float "land_only_price"
+    t.float "apartment_price"
+    t.float "house_price"
+    t.float "farm_price"
+    t.integer "lands_count"
     t.index ["alias_name"], name: "index_addresses_on_alias_name", using: :gin
     t.index ["name"], name: "index_addresses_on_name", using: :gin
     t.index ["parent_id"], name: "index_addresses_on_parent_id"
@@ -95,7 +100,6 @@ ActiveRecord::Schema.define(version: 2020_02_14_132329) do
     t.index ["post_date"], name: "index_lands_on_post_date", where: "(deleted_at IS NULL)"
     t.index ["province_id"], name: "index_lands_on_province_id"
     t.index ["province_id"], name: "index_lands_on_province_id_with_deleted_at", where: "(deleted_at IS NULL)"
-    t.index ["province_id"], name: "index_lands_province_with_total_price_and_acreage", where: "((deleted_at IS NULL) AND ((total_price > (0)::double precision) AND (acreage > (0)::double precision)))"
     t.index ["slug"], name: "index_lands_on_slug", unique: true
     t.index ["street_id"], name: "index_lands_on_deleted_at_address_id", where: "(deleted_at IS NULL)"
     t.index ["street_id"], name: "index_lands_on_street_id"

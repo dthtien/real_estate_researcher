@@ -5,8 +5,7 @@ class V1::AddressesController < ApplicationController
   end
 
   def address_names
-    data = Address.search_by_name(params[:q]).limit(10)
-
+    data = Address.search_by_name(params[:q]).order(:id).limit(10)
     render json: AddressSuggestionSerializer.new(data).serializable_hash
   end
 

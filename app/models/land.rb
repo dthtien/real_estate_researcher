@@ -46,10 +46,6 @@ class Land < ApplicationRecord
     calculatable.order(params)
   end)
 
-  scope :average_price_calculate, (lambda do
-    avg = calculatable.average(:square_meter_price).to_f
-  end)
-
   scope :with_acreage_range, (lambda do |acreage_range|
     where(acreage: (acreage_range.first...acreage_range.last))
   end)
@@ -79,6 +75,10 @@ class Land < ApplicationRecord
   end)
 
   class << self
+    def average_price_calculate
+      calculatable.average(:square_meter_price).to_f
+    end
+
     def land_only_price
       where(classification: [4, 5])
         .calculatable

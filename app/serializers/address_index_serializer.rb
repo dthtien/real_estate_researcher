@@ -3,8 +3,23 @@ class AddressIndexSerializer < ApplicationSerializer
     AddressesSerializer.new(object.addresses).serializable_hash[:data]
   end
 
-  attribute :average_price do |object|
-    avg_price = object.addresses.map(&:calculating_average_price).sum
+  attribute :land_only_price do |object|
+    avg_price = object.addresses.map(&:land_only_price).sum
+    avg_price / object.addresses.size
+  end
+
+  attribute :apartment_price do |object|
+    avg_price = object.addresses.map(&:apartment_price).sum
+    avg_price / object.addresses.size
+  end
+
+  attribute :house_price do |object|
+    avg_price = object.addresses.map(&:house_price).sum
+    avg_price / object.addresses.size
+  end
+
+  attribute :farm_price do |object|
+    avg_price = object.addresses.map(&:farm_price).sum
     avg_price / object.addresses.size
   end
 
@@ -13,12 +28,12 @@ class AddressIndexSerializer < ApplicationSerializer
   end
 
   attribute :lands_count do |object|
-    object.addresses.map(&:calculating_lands_count).sum
+    object.addresses.map(&:lands_count).compact.sum
   end
 
   attribute :new_lands_count do |object|
     object.addresses.map do |address|
-      address.lands.new_lands_count
+      address.lands_count
     end.sum
   end
 end

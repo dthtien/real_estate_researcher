@@ -7,5 +7,5 @@ class PriceLogger < ApplicationRecord
     where('price_loggers.created_at < ?', 2.days.ago.end_of_day)
   end)
 
-  scope :needed_fields, -> { select(:price, :lands_count, :created_at) }
+  scope :needed_fields, -> { select(:price, :lands_count, :created_at, :id) }
 end
