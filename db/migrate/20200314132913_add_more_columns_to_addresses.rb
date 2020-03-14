@@ -6,7 +6,7 @@ class AddMoreColumnsToAddresses < ActiveRecord::Migration[6.0]
     add_column :addresses, :farm_price, :float
     add_column :addresses, :lands_count, :integer
 
-    Addresses::PriceLogger.new.call
+    AddressPriceLoggerJob.perform_later
   end
 
   def down
