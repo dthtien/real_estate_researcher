@@ -60,7 +60,7 @@ class LandOperations::Index
     if @address_names.present?
       customize_rendering.page(params[:page].to_i + 1)
     else
-      with_ordering.includes(:history_prices).page(params[:page].to_i + 1)
+      with_ordering(Address.first.lands).includes(:history_prices).page(params[:page].to_i + 1)
     end
   end
 
