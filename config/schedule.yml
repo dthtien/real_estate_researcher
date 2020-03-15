@@ -25,7 +25,8 @@ generate_sitemap:
   cron: "0 1 * * *"
   class: "SitemapGeneratorJob"
   queue: default
-generate_sitemap:
+
+logging_address_attributes:
   cron: "0 */6 * * *"
   class: "AddressPriceLoggerJob"
   queue: default
