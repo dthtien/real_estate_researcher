@@ -16,7 +16,6 @@ class AddressSerializer < AddressesSerializer
         []
       end
     if data.present?
-      data = data.includes(:price_loggers)
       data = data.ordering(params) if params.present?
       AddressGraphSerializer.new(data).serializable_hash[:data]
     else

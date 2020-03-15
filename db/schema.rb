@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_14_132913) do
+ActiveRecord::Schema.define(version: 2020_03_15_033136) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
@@ -95,17 +95,21 @@ ActiveRecord::Schema.define(version: 2020_03_14_132913) do
     t.jsonb "images", default: [], array: true
     t.index ["address_detail"], name: "index_lands_on_address_detail", using: :gin
     t.index ["alias_title"], name: "index_lands_on_alias_title", using: :gin
+    t.index ["created_at"], name: "index_lands_on_created_at_with_calculable_columns", where: "((deleted_at IS NULL) AND ((total_price > (0)::double precision) AND (acreage > (0)::double precision)))"
     t.index ["deleted_at"], name: "index_lands_on_deleted_at"
     t.index ["district_id"], name: "index_lands_on_district_id"
+    t.index ["district_id"], name: "index_lands_on_district_id_with_deleted_at", where: "((deleted_at IS NULL) AND ((total_price > (0)::double precision) AND (acreage > (0)::double precision)))"
     t.index ["post_date"], name: "index_lands_on_post_date", where: "(deleted_at IS NULL)"
     t.index ["province_id"], name: "index_lands_on_province_id"
-    t.index ["province_id"], name: "index_lands_on_province_id_with_deleted_at", where: "(deleted_at IS NULL)"
+    t.index ["province_id"], name: "index_lands_on_province_id_with_deleted_at", where: "((deleted_at IS NULL) AND ((total_price > (0)::double precision) AND (acreage > (0)::double precision)))"
     t.index ["slug"], name: "index_lands_on_slug", unique: true
     t.index ["street_id"], name: "index_lands_on_deleted_at_address_id", where: "(deleted_at IS NULL)"
     t.index ["street_id"], name: "index_lands_on_street_id"
+    t.index ["street_id"], name: "index_lands_on_street_id_with_deleted_at", where: "((deleted_at IS NULL) AND ((total_price > (0)::double precision) AND (acreage > (0)::double precision)))"
     t.index ["title"], name: "index_lands_on_title", using: :gin
     t.index ["user_id"], name: "index_lands_on_user_id"
     t.index ["ward_id"], name: "index_lands_on_ward_id"
+    t.index ["ward_id"], name: "index_lands_on_ward_id_with_deleted_at", where: "((deleted_at IS NULL) AND ((total_price > (0)::double precision) AND (acreage > (0)::double precision)))"
   end
 
   create_table "price_loggers", force: :cascade do |t|
