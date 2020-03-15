@@ -41,26 +41,28 @@ class LandOperations::Index
     end
   end
 
-  def with_ordering(lands = Land)
-    lands = lands.with_history_prices if order['history_prices_count'].present?
+  def with_ordering(scope = Land)
+    scope = scope.with_history_prices if order['history_prices_count'].present?
     %i[price_range acreage_range front_length_range].each do |method_name|
       condition = method(method_name).call
 
       if condition.present? && condition != DEFAULT_PRICE_ORDERING
-        lands = lands.send("with_#{method_name}", condition)
+        scope = scope.send("with_#{method_name}", condition)
       end
     end
 
-    lands = lands.with_classification(classification) if classification.present?
-    lands = lands.search(keyword) if keyword.present?
-    lands.rendering(order)
+    scope = scope.with_classification(classification) if classification.present?
+    scope = scope.search(keyword) if keyword.present?
+    scope.rendering(order)
   end
 
   def parse_lands
     if @address_names.present?
       customize_rendering.page(params[:page].to_i + 1)
     else
-      with_ordering(Address.first.lands).includes(:history_prices).page(params[:page].to_i + 1)
+      with_ordering(Address.first.lands)
+                          .includes(:history_prices)
+                          .page(params[:page].to_i + 1)
     end
   end
 

@@ -7,7 +7,7 @@ scrapping_addresses:
   class: "ScrappingAddressesJob"
   queue: default
 post_bargain:
-  cron: "3 16 * * *"
+  cron: "3 12 * * *"
   class: "PostBargainJob"
   queue: default
 

@@ -2,7 +2,7 @@ class PostBargainJob < ApplicationJob
   include ActionView::Helpers::NumberHelper
   FRONT_END_URL = 'https://toplands.tech/app/lands/'.freeze
   NOT_PROVIDE = 'Không cung cấp'.freeze
-  MONITORING_DISTRICT_SLUGS = %w[ho-chi-minh thu-duc quan-12 quan-9].freeze
+  MONITORING_DISTRICT_SLUGS = %w[thu-duc quan-12 quan-9].freeze
 
   def perform
     Address.where(slug: MONITORING_DISTRICT_SLUGS).each do |address|
