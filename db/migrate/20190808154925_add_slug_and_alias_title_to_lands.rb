@@ -4,7 +4,7 @@ class AddSlugAndAliasTitleToLands < ActiveRecord::Migration[5.2]
     add_index :lands, :slug, unique: true
     add_column :lands, :alias_title, :string
 
-    Land.all.each do |land|
+    Land.with_deleted.each do |land|
       land.alias_title = VietnameseSanitizer.execute!(land.title)
       land.save
     end
