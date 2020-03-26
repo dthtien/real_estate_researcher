@@ -16,17 +16,17 @@ services:
     image: postgres:10.12-alpine
     volumes:
       - ./tmp/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: password
 # Our Redis service:
   redis:
     image: redis:5.0.8-alpine
-    ports:
-      - "6379:6379"
     volumes:
       # We'll mount the 'redis-data' volume into the location redis stores it's data:
       - redis-data:/var/lib/redis
     command: redis-server --appendonly yes
   web:
-    build: .
+    image: dthtien/toplands:1.1.7
     command: 'bundle exec puma -C config/puma.rb'
     volumes:
       - .:/toplands
@@ -38,12 +38,12 @@ services:
       - db
       - redis
   sidekiq:
-    build: .
+    image: dthtien/toplands:1.1.7
     command: 'bundle exec sidekiq'
     volumes:
       - .:/toplands
     environment:
       REDIS_URL: 'redis://redis:6379/12'
     depends_on:
-      - redis
+         - redis
 

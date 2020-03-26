@@ -34,6 +34,8 @@ RUN apk add --update postgresql-client postgresql-libs nodejs tzdata
 
 # Adding project files
 COPY . .
+#RUN rm config/database.yml
+RUN cp config/database.yml.docker config/database.yml
 
 #RUN bundle exec rake assets:precompile
 
