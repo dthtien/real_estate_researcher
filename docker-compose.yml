@@ -1,15 +1,49 @@
-version: '3'
+version: '3.7'
+volumes:
+  # We'll define a volume that will store the data from the postgres databases:
+  postgres-data:
+    driver: local
+  # The rabbitmq data store volume
+  redis-data:
+    driver: local
+  # We'll also define a volume that will store gems installed manually after the initial app
+  # development image build process:
+  app-gems:
+    driver: local
+
 services:
   db:
-    image: postgres
+    image: postgres:10.12-alpine
     volumes:
       - ./tmp/db:/var/lib/postgresql/data
+# Our Redis service:
+  redis:
+    image: redis:5.0.8-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      # We'll mount the 'redis-data' volume into the location redis stores it's data:
+      - redis-data:/var/lib/redis
+    command: redis-server --appendonly yes
   web:
     build: .
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    command: 'bundle exec puma -C config/puma.rb'
     volumes:
-      - .:/myapp
+      - .:/toplands
+    environment:
+      REDIS_URL: 'redis://redis:6379/12'
     ports:
       - "3000:3000"
     depends_on:
       - db
+      - redis
+  sidekiq:
+    build: .
+    command: 'bundle exec sidekiq'
+    volumes:
+      - .:/toplands
+    environment:
+      REDIS_URL: 'redis://redis:6379/12'
+    depends_on:
+      - redis
+
