@@ -1,7 +1,7 @@
 # config valid for current version and patch releases of Capistrano
 lock '~> 3.11.0'
 
-set :application, 'top_lands_api'
+set :application, 'toplands'
 set :repo_url, 'git@github.com:dthtien/real_estate_researcher.git'
 set :user, 'deploy'
 set :puma_threads, [0, 6]
@@ -81,6 +81,16 @@ namespace :deploy do
     end
   end
 
+  desc 'Build docker and start'
+  task :build_and_start_docker do
+    on roles(:app) do
+      within current_path do
+        exec 'docker build -t dthtien/toplands .'
+        execute 'docker-compose up'
+      end
+    end
+  end
+
   desc 'Initial Deploy'
   task :initial do
     on roles(:app) do
@@ -98,7 +108,8 @@ namespace :deploy do
 
   before :starting,     :check_revision
   after  :finishing,    :cleanup
-  after  :finishing,    :restart
+  after  :finishing,    :build_and_start_docker
+
   # after  :finishing,    :update_cron
 end
 

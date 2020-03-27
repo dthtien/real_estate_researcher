@@ -7,7 +7,7 @@ Sidekiq::Web.class_eval do
 end
 
 Sidekiq::Web.use Rack::Auth::Basic do |username, password|
-  ENV['SIDEKIQ_USERNAME'] == username && ENV['SIDEKIQ_KEY'] == password
+  Rails.env.development? || ENV['SIDEKIQ_USERNAME'] == username && ENV['SIDEKIQ_KEY'] == password
 end
 
 

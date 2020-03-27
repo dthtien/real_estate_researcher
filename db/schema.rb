@@ -103,7 +103,6 @@ ActiveRecord::Schema.define(version: 2020_03_15_033136) do
     t.index ["province_id"], name: "index_lands_on_province_id"
     t.index ["province_id"], name: "index_lands_on_province_id_with_deleted_at", where: "((deleted_at IS NULL) AND ((total_price > (0)::double precision) AND (acreage > (0)::double precision)))"
     t.index ["slug"], name: "index_lands_on_slug", unique: true
-    t.index ["street_id"], name: "index_lands_on_deleted_at_address_id", where: "(deleted_at IS NULL)"
     t.index ["street_id"], name: "index_lands_on_street_id"
     t.index ["street_id"], name: "index_lands_on_street_id_with_deleted_at", where: "((deleted_at IS NULL) AND ((total_price > (0)::double precision) AND (acreage > (0)::double precision)))"
     t.index ["title"], name: "index_lands_on_title", using: :gin

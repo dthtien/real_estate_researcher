@@ -26,19 +26,21 @@ services:
       - redis-data:/var/lib/redis
     command: redis-server --appendonly yes
   web:
-    image: dthtien/toplands:1.1.7
+    image: dthtien/toplands
     command: 'bundle exec puma -C config/puma.rb'
     volumes:
       - .:/toplands
     environment:
       REDIS_URL: 'redis://redis:6379/12'
     ports:
-      - "3000:3000"
+      - "80:3000"
     depends_on:
       - db
       - redis
+    env_file:
+      - .env
   sidekiq:
-    image: dthtien/toplands:1.1.7
+    image: dthtien/toplands
     command: 'bundle exec sidekiq'
     volumes:
       - .:/toplands
