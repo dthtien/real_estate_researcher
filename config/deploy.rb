@@ -29,7 +29,7 @@ set :sidekiq_processes, 1
 # set :sidekiq_log, File.join(shared_path, 'log', 'sidekiq.log')
 
 set :linked_files, %w[config/database.yml config/master.key config/puma.rb]
-set :rbenv_ruby, '2.6.0'
+set :rbenv_ruby, '2.6.5'
 ## Defaults:
 # set :scm,           :git
 # set :branch,        :master
