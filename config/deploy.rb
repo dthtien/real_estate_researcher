@@ -34,7 +34,6 @@ set :repo_url, 'git@github.com:dthtien/real_estate_researcher.git'
 # Default value for local_user is ENV['USER']
 # set :local_user, -> { `git config user.name`.chomp }
 
-set :linked_files, %w[config/database.yml config/master.key .env]
 # Default value for keep_releases is 5
 set :keep_releases, 5
 
@@ -58,6 +57,7 @@ namespace :deploy do
       within release_path do
         execute "cd #{release_path} && docker stop $(docker ps -a -q  --filter ancestor=dthtien/toplands) || true"
         execute "cd #{release_path} && docker build -t dthtien/toplands ."
+        execute "cp #{shared_path}/config/* #{release_path}/config/"
         execute "cd #{release_path} && docker-compose run web bundle exec rails db:setup"
         execute "cd #{release_path} && docker-compose up -d"
       end

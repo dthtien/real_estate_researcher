@@ -38,7 +38,7 @@ services:
       - db
       - redis
     env_file:
-      - .env
+      - config/.env
   sidekiq:
     image: dthtien/toplands
     command: 'bundle exec sidekiq'
