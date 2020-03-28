@@ -59,7 +59,7 @@ namespace :deploy do
         execute "cd #{release_path} && docker stop $(docker ps -a -q  --filter ancestor=dthtien/toplands) || true"
         execute "cd #{release_path} && docker build -t dthtien/toplands ."
         execute "cd #{release_path} && docker-compose run web bundle exec rails db:setup"
-        execute "cd #{release_path} && docker-compose up"
+        execute "cd #{release_path} && docker-compose up -d"
       end
     end
   end
