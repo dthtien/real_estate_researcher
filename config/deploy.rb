@@ -3,116 +3,67 @@ lock '~> 3.11.0'
 
 set :application, 'toplands'
 set :repo_url, 'git@github.com:dthtien/real_estate_researcher.git'
-set :user, 'deploy'
-set :puma_threads, [0, 6]
-set :puma_workers, 0
-set :rails_env, :production
 
-set :pty, true
-set :use_sudo, false
-set :deploy_via, :remote_cache
-current_shared_path = "/home/#{fetch(:user, 'deploy')}/#{fetch(:application)}/shared"
-set :puma_bind,       "unix://#{current_shared_path}/tmp/sockets/puma.sock"
-set :puma_state,      "#{current_shared_path}/tmp/pids/puma.state"
-set :puma_pid,        "#{current_shared_path}/tmp/pids/puma.pid"
-set :puma_access_log, "#{current_shared_path}/log/puma.error.log"
-set :puma_error_log,  "#{current_shared_path}/log/puma.access.log"
-set :ssh_options,     { forward_agent: true, keys: %w(~/.ssh/id_rsa) }
-set :puma_preload_app, true
-set :puma_worker_timeout, nil
-set :puma_init_active_record, true
+# append :linked_files, '.env'
+# append :linked_dirs, 'node_modules'
+
+# Default branch is :master
+# ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
+
+# Default deploy_to directory is /var/www/my_app_name
+
+# Default value for :format is :airbrussh.
+# set :format, :airbrussh
+
+# You can configure the Airbrussh format using :format_options.
+# These are the defaults.
+# set :format_options, command_output: true, log_file: "log/capistrano.log", color: :auto, truncate: :auto
+
+# Default value for :pty is false
+# set :pty, true
+
+# Default value for :linked_files is []
+# append :linked_files, "config/database.yml"
+
+# Default value for linked_dirs is []
+# append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system"
+
+# Default value for default_env is {}
+# set :default_env, { path: "/opt/ruby/bin:$PATH" }
+
+# Default value for local_user is ENV['USER']
+# set :local_user, -> { `git config user.name`.chomp }
+
+set :linked_files, %w[config/database.yml config/master.key .env]
+# Default value for keep_releases is 5
 set :keep_releases, 5
 
-# sidekiq configuation
-set :sidekiq_options_per_process, ['--queue critical --queue default']
-set :sidekiq_processes, 1
-# set :sidekiq_log, File.join(shared_path, 'log', 'sidekiq.log')
-
-set :linked_files, %w[config/database.yml config/master.key config/puma.rb]
-set :rbenv_ruby, '2.6.5'
-## Defaults:
-# set :scm,           :git
-# set :branch,        :master
-# set :format,        :pretty
-# set :log_level,     :debug
-# set :keep_releases, 5
-
-namespace :puma do
-  desc 'Create Directories for Puma Pids and Socket'
-  task :make_dirs do
-    on roles(:app) do
-      execute "mkdir #{shared_path}/tmp/sockets -p"
-      execute "mkdir #{shared_path}/tmp/pids -p"
-    end
-  end
-
-  before :start, :make_dirs
-end
-
+# Uncomment the following to require manually verifying the host key before first deploy.
+# set :ssh_options, verify_host_key: :secure
 namespace :deploy do
-  desc "Make sure local git is in sync with remote."
-  task :check_revision do
-    on roles(:app) do
-      unless `git rev-parse HEAD` == `git rev-parse origin/master`
-        puts "WARNING: HEAD is not the same as origin/master"
-        puts "Run `git push` to sync changes."
-        exit
+  # desc 'Make sure local git is in sync with remote.'
+
+  # task :check_revision do
+    # on roles(:app) do
+      # unless `git rev-parse HEAD` == `git rev-parse origin/#{fetch(:branch)}`
+        # puts "WARNING: HEAD is not the same as origin/#{fetch(:branch)}"
+        # exit
+      # end
+    # end
+  # end
+
+  desc 'Build react app'
+  task :build_docker_for_app do
+    on roles(:web) do
+      within release_path do
+        execute "cd #{release_path} && docker stop $(docker ps -a -q  --filter ancestor=dthtien/toplands) || true"
+        execute "cd #{release_path} && docker build -t dthtien/toplands ."
+        execute "cd #{release_path} && docker-compose run web bundle exec rails db:setup"
+        execute "cd #{release_path} && docker-compose up"
       end
     end
   end
 
-  desc 'correct lands data'
-  task :correct_data do
-    on roles(:app) do
-      within current_path do
-        with rails_env: :production do
-          execute :bundle, :exec, 'rake correct_data:start'
-        end
-      end
-    end
-  end
-
-  desc 'Update crontab with whenever'
-  task :update_cron do
-    on roles(:app) do
-      within current_path do
-        execute :bundle, :exec, "whenever --update-crontab #{fetch(:application)}"
-      end
-    end
-  end
-
-  desc 'Build docker and start'
-  task :build_and_start_docker do
-    on roles(:app) do
-      within current_path do
-        exec 'docker build -t dthtien/toplands .'
-        execute 'docker-compose up'
-      end
-    end
-  end
-
-  desc 'Initial Deploy'
-  task :initial do
-    on roles(:app) do
-      before 'deploy:restart', 'puma:start'
-      invoke 'deploy'
-    end
-  end
-
-  desc 'Restart application'
-  task :restart do
-    on roles(:app), in: :sequence, wait: 5 do
-      invoke 'puma:smart_restart'
-    end
-  end
-
-  before :starting,     :check_revision
-  after  :finishing,    :cleanup
-  after  :finishing,    :build_and_start_docker
-
-  # after  :finishing,    :update_cron
+#  before :starting, :check_revision
+  before :finishing, :build_docker_for_app
 end
-
-# ps aux | grep puma    # Get puma pid
-# kill -s SIGUSR2 pid   # Restart puma
-# kill -s SIGTERM pid   # Stop puma
