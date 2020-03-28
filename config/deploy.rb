@@ -54,16 +54,17 @@ namespace :deploy do
   desc 'Build react app'
   task :build_docker_for_app do
     on roles(:web) do
-      within release_path do
-        execute "cd #{release_path} && docker stop $(docker ps -a -q  --filter ancestor=dthtien/toplands) || true"
-        execute "cd #{release_path} && docker build -t dthtien/toplands ."
-        execute "shopt -s dotglob && cp #{shared_path}/config/* #{release_path}/config/"
-        execute "cd #{release_path} && docker-compose run web bundle exec rails db:setup"
-        execute "cd #{release_path} && docker-compose up -d"
+      within current_path do
+        execute "cd #{current_path} && docker stop $(docker ps -a -q  --filter ancestor=dthtien/toplands) || true"
+        execute "mkdir #{current_path}/tmp/pids"
+        execute "cd #{current_path} && docker build -t dthtien/toplands ."
+        execute "shopt -s dotglob && cp #{shared_path}/config/* #{current_path}/config/"
+        execute "cd #{current_path} && docker-compose run web bundle exec rails db:migrate"
+        execute "cd #{current_path} && docker-compose up -d"
       end
     end
   end
 
 #  before :starting, :check_revision
-  before :finishing, :build_docker_for_app
+  after :finishing, :build_docker_for_app
 end
