@@ -4,7 +4,9 @@ class LandBaseSerializer < ApplicationSerializer
 
   attribute :classification do |object|
     classififcation = Land.classifications[object.classification]
-    Scrapers::LandDetail::LAND_CLASSIFICATION_KEYS[classififcation]
+    Scrapers::BdsScrappers::LandDetail::LAND_CLASSIFICATION_KEYS[
+      classififcation
+    ]
   end
 
   attribute :updated_at do |object|

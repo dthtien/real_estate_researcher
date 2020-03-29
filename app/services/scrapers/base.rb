@@ -1,7 +1,7 @@
-# Scraper https://batdongsan.com.vn to predict real estate price
 require 'open-uri'
 class Scrapers::Base
   include ActiveSupport::Rescuable
+  attr_reader :base_url
   PROHIBIT_CONTENT = 'sorry! something went wrong.'.freeze
   USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36'.freeze
   BASE_URL = 'https://batdongsan.com.vn/'.freeze
@@ -23,9 +23,10 @@ class Scrapers::Base
     nil
   end
 
-  def initialize
+  def initialize(base_url = BASE_URL)
     @proxy_url = ProxyGenerator.new.execute
     @retry_time = 0
+    @base_url = base_url
   end
 
   def page_content(url)
@@ -45,7 +46,7 @@ class Scrapers::Base
   def requesting(url)
     respone = Nokogiri::HTML(
       open(
-        BASE_URL + url,
+        base_url + url,
         'User-Agent' => USER_AGENT,
         proxy: @proxy_url,
         &:read

@@ -1,5 +1,5 @@
 class ScrappingAddressesJob < ApplicationJob
   def perform
-    Scrapers::DistrictDetail.new.call
+    Scrapers::BdsScrappers::DistrictDetail.new.call
   end
 end

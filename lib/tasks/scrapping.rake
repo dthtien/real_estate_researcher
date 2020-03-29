@@ -6,13 +6,13 @@ namespace :scrapping do
 
   task first: :environment do
     District.order(created_at: 'asc').each do |district|
-      Scrapers::LandDetail.new.call_with_district(district)
+      Scrapers::BdsScrappers::LandDetail.new.call_with_district(district)
     end
   end
 
   task second: :environment do
     District.order(created_at: 'desc').each do |district|
-      Scrapers::LandDetail.new.call_with_district(district)
+      Scrapers::BdsScrappers::LandDetail.new.call_with_district(district)
     end
   end
 
@@ -21,7 +21,7 @@ namespace :scrapping do
             .having('COUNT(lands.id) = 0')
             .group(:id)
             .each do |district|
-      Scrapers::LandDetail.new.call_with_district(district)
+      Scrapers::BdsScrappers::LandDetail.new.call_with_district(district)
     end
   end
 end

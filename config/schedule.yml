@@ -30,3 +30,8 @@ logging_address_attributes:
   cron: "0 */6 * * *"
   class: "AddressPriceLoggerJob"
   queue: default
+
+post_article:
+  cron: "0 8 * * *"
+  class: "PostArticleJob"
+  queue: default

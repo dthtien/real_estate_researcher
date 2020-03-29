@@ -6,7 +6,7 @@ class ScrappingLandsJob < ApplicationJob
     return if running?(district_ids)
 
     District.where(id: district_ids).each do |district|
-      Scrapers::LandDetail.new.call_with_district(district)
+      Scrapers::BdsScrappers::LandDetail.new.call_with_district(district)
     end
   end
 
