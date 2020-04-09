@@ -21,7 +21,7 @@ set :ssh_options,     { forward_agent: true, keys: %w(~/.ssh/id_rsa) }
 set :puma_preload_app, true
 set :puma_worker_timeout, nil
 set :puma_init_active_record, true
-set :keep_releases, 5
+set :keep_releases, 2
 
 # sidekiq configuation
 set :sidekiq_options_per_process, ['--queue critical --queue default']
