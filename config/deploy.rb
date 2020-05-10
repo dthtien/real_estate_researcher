@@ -99,7 +99,7 @@ namespace :deploy do
   before :starting,     :check_revision
   after  :finishing,    :cleanup
   after  :finishing,    :restart
-  # after  :finishing,    :update_cron
+  after  :finishing,    :update_cron
 end
 
 # ps aux | grep puma    # Get puma pid
